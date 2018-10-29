@@ -9,6 +9,7 @@ export default class Administrador extends Component {
     super(props);
 
   this.state = {
+    url : this.props.host + ":" +  this.props.port,
     isLoading: true,
     isAddingAdmins: false,
     isConnected: false,
@@ -32,7 +33,7 @@ export default class Administrador extends Component {
 
 componentDidMount() {
 
-  axios.get('http://localhost:3000/administrador/obtenerAdministradores')
+  axios.get('http://'+this.state.url+'/administrador/obtenerAdministradores')
  .then(res => {
    const persons = res.data;
    console.log(persons);
@@ -89,7 +90,7 @@ deleteAdmin(id){
   var payload = { data: {
     "idadministrador": id
   }}
-  axios.delete('http://localhost:3000/administrador/eliminarAdministrador', payload)
+  axios.delete('http://'+this.state.url+'/administrador/eliminarAdministrador', payload)
   .then(res => {
     const persons = res.data;
     console.log(persons);
@@ -160,7 +161,7 @@ handleSubmit = async event => {
 
       if(this.state.isEditing){
         //Se editará el administrador
-        await axios.post('http://localhost:3000/administrador/editarAdministrador', payload)
+        await axios.post('http://'+this.state.url+'/administrador/editarAdministrador', payload)
         .then(function (response) {
           
             if(response.data.success === 1){
@@ -187,7 +188,7 @@ handleSubmit = async event => {
 
       }else{
 
-        await axios.post('http://localhost:3000/administrador/agregarAdministrador', payload)
+        await axios.post('http://'+this.state.url+'/administrador/agregarAdministrador', payload)
       .then(function (response) {
         
           if(response.data.success === 1){

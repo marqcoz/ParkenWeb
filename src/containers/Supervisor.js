@@ -13,6 +13,7 @@ export default class Supervisor extends Component {
     super(props);
 
   this.state = {
+    url : this.props.host + ":" +  this.props.port,
     isLoading: true,
     isAddingSupers: false,
     isShowingInfo: false,
@@ -46,7 +47,7 @@ export default class Supervisor extends Component {
 
 componentDidMount() {
     var idzona = "0";
-    var url = 'http://localhost:3000/administrador/obtenerSupervisoresXZona?idzona=' + idzona;
+    var url = 'http://'+this.state.url+'/administrador/obtenerSupervisoresXZona?idzona=' + idzona;
   axios.get(url)
  .then(res => {
    const supers = res.data.supervisores;
@@ -111,7 +112,7 @@ deleteSuper(id){
   var payload = { data: {
     "idsupervisor": id
   }}
-  axios.delete('http://localhost:3000/administrador/eliminarSupervisor', payload)
+  axios.delete('http://'+this.state.url+'/administrador/eliminarSupervisor', payload)
   .then(res => {
     const supervisor = res.data;
     console.log(supervisor);
@@ -163,7 +164,7 @@ setNoAddingAdmins = event => {
 }
 
 async gettingZonasParken(){
-var url = 'http://localhost:3000/administrador/obtenerZonasParkenID';
+var url = 'http://'+this.state.url+'/administrador/obtenerZonasParkenID';
  await axios.get(url)
  .then(res => {
    const zonasparken = res.data;
@@ -247,7 +248,7 @@ handleSubmit = async event => {
 
       if(this.state.isEditing){
         //Se editará el supervisor
-        await axios.post('http://localhost:3000/administrador/editarSupervisor', payload)
+        await axios.post('http://'+this.state.url+'/administrador/editarSupervisor', payload)
         .then(function (response) {
           
             if(response.data.success === 1){
@@ -274,7 +275,7 @@ handleSubmit = async event => {
 
       }else{
 
-        await axios.post('http://localhost:3000/administrador/agregarSupervisor', payload)
+        await axios.post('http://'+this.state.url+'/administrador/agregarSupervisor', payload)
         .then(function (response) {
         console.log(response);
           if(response.data.success == 1){

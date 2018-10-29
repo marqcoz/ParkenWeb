@@ -10,6 +10,7 @@ export class Zonas extends Component {
     super(props);
 
 this.state = {
+  url : this.props.host + ":" +  this.props.port,
   idzonaparken: "",
   nombre : "",
   estatus: "NO DISPONIBLE",
@@ -106,7 +107,7 @@ async gettingLocation(){
 
 componentDidMount() {
 
-axios.get('http://localhost:3000/administrador/obtenerZonasParken')
+axios.get('http://'+this.state.url+'/administrador/obtenerZonasParken')
 .then(res => {
  const zonas = res.data.ZonasParken;
  console.log(zonas);
@@ -246,6 +247,9 @@ onMarkerClicked = (props, marker, e) => {
 
 onMapClicked = (location, map) => {
 
+  if(!this.state.isShowingInfo){
+
+  
       console.log(location, map);
       map.panTo(location);
       console.log((this.state.markers));
@@ -280,7 +284,7 @@ onMapClicked = (location, map) => {
     });
 
   }
-  
+}
   
 };
 
@@ -322,7 +326,7 @@ handleSubmit = event => {
      "coordenadasPoly": this.state.polygon,
      "coodenadasMarker": this.state.markers
     }
-    axios.post('http://localhost:3000/administrador/agregarZonaParken', payload)
+    axios.post('http://'+this.state.url+'/administrador/agregarZonaParken', payload)
     .then(res => {
       const response = res.data;
       console.log(response);

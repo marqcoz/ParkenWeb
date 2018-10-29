@@ -9,6 +9,7 @@ export default class Login extends Component {
     super(props);
 
     this.state = {
+      url : this.props.host + ":" +  this.props.port,
       isLoading: false,
       email: "",
       password: "",
@@ -51,8 +52,9 @@ export default class Login extends Component {
         }
 
         var self = this;
+        
 
-        await axios.post('http://localhost:3000/login', payload)
+        await axios.post('http://'+this.state.url+'/login', payload)
         .then(function (response) {
         console.log(response);
         console.log(response.data.success);
