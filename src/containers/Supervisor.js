@@ -46,26 +46,30 @@ export default class Supervisor extends Component {
 }
 
 componentDidMount() {
-    var idzona = "0";
-    var url = 'http://'+this.state.url+'/administrador/obtenerSupervisoresXZona?idzona=' + idzona;
-  axios.get(url)
- .then(res => {
-   const supers = res.data.supervisores;
-   console.log(supers);
-   if(supers.success === 2){
-    this.setState({isLoading : false})
-    this.setState({isConnected : false})
+ this.gettingSupervisoresXZona();
+}
 
-   }else{
-    this.setState({supers});
-    this.setState({isLoading : false})
-    this.setState({isConnected : true})
-   }
-   
- }).catch(error => {
-  alert(error.message);
+async gettingSupervisoresXZona(){
+  var idzona = "0";
+  var url = 'http://'+this.state.url+'/administrador/obtenerSupervisoresXZona?idzona=' + idzona;
+await axios.get(url)
+.then(res => {
+ const supers = res.data.supervisores;
+ console.log(supers);
+ if(supers.success === 2){
   this.setState({isLoading : false})
   this.setState({isConnected : false})
+
+ }else{
+  this.setState({supers});
+  this.setState({isLoading : false})
+  this.setState({isConnected : true})
+ }
+ 
+}).catch(error => {
+alert(error.message);
+this.setState({isLoading : false})
+this.setState({isConnected : false})
 });
 }
 
@@ -281,7 +285,8 @@ handleSubmit = async event => {
           if(response.data.success == 1){
               alert("Supervisor agregado exitosamente.");
               self.setNoAddingAdmins();
-              self.props.history.push("/supervisores");
+              self.gettingSupervisoresXZona();
+              self.setState({isAddingSupers: false, isConnected: true});
           }
           else {
             if(response.data.success == 2){
@@ -336,9 +341,9 @@ renderAddSupervisor() {
   return (
       
     <div className="Supervisor" >
-    <PageHeader>{this.state.title}</PageHeader>
-      <form onSubmit={this.handleSubmit}>
-        <FormGroup controlId="nombre" bsSize="small">
+    <PageHeader className="tit">{this.state.title}</PageHeader>
+      <form className="Formulario" onSubmit={this.handleSubmit}>
+        <FormGroup  controlId="nombre" bsSize="small">
           <ControlLabel>Nombre</ControlLabel>
           <FormControl
            autoFocus
@@ -424,7 +429,7 @@ renderAddSupervisor() {
 }
 
 renderSupersList(supers) {
-  return [{}].concat(supers).map(
+  return(<div className="list"> {[{}].concat(supers).map(
     (supervisor, i) =>
       i !== 0
         ? 
@@ -452,28 +457,24 @@ renderSupersList(supers) {
                 <b>{"\uFF0B"}</b> Agregar supervisor
               </h4>
             </ListGroupItem>
-  );
+  )}</div>);
 }
+
 
 renderLander() {
   return (
-    <div className="Supervisor">
-      <h1>Parken</h1>
-      <ListGroupItem onClick={this.setAddingSupers}>
+      <div className="load">
               <h4>
-                <b>{"\uFF0B"}</b> Agregar supervisor
-
+                Cargando supervisores...
               </h4>
-            </ListGroupItem>
-    </div>
+      </div>
   );
 }
-
 
 renderSupers() {
   return (
     <div className="Supervisor">
-      <PageHeader>Supervisores</PageHeader>
+      <PageHeader className="tit">Supervisores</PageHeader>
       <ListGroup>
         {!this.state.isLoading && this.renderSupersList(this.state.supers)}
       </ListGroup>

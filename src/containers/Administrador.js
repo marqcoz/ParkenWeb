@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {PageHeader, FormGroup, FormControl, ControlLabel, ListGroup, ListGroupItem } from "react-bootstrap";
+import {Modal, Button,Popover, PageHeader, FormGroup, FormControl, ControlLabel, ListGroup, ListGroupItem } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import axios from 'axios';
 import "./Administrador.css";
@@ -15,6 +15,7 @@ export default class Administrador extends Component {
     isConnected: false,
     thereAdmins: true,
     isEditing: false,
+    isDeleted: false,
     title:"",
     notes: [],
     persons: [],
@@ -24,16 +25,25 @@ export default class Administrador extends Component {
     apellido: "",
     email: "",
     password: "",
-    repassword: ""
+    repassword: "",
+
+    show: false
   };
 
   this.deleteAdmin = this.deleteAdmin.bind(this);
   this.setEdit = this.setEdit.bind(this);
+  this.handleClose = this.handleClose.bind(this);
+  this.showAlert = this.showAlert.bind(this);
+  this.handleAction1 = this.handleClose.bind(this);
+  this.handleAction2 = this.handleAction2.bind(this);
 }
 
 componentDidMount() {
+  this.gettingAdministradores();
+}
 
-  axios.get('http://'+this.state.url+'/administrador/obtenerAdministradores')
+async gettingAdministradores(){
+  await axios.get('http://'+this.state.url+'/administrador/obtenerAdministradores')
  .then(res => {
    const persons = res.data;
    console.log(persons);
@@ -54,7 +64,6 @@ componentDidMount() {
 });
 }
 
-
 validateForm() {
   return this.state.email.length > 0 && 
   this.state.password.length > 0 && 
@@ -72,6 +81,10 @@ validatePassword(){
   } 
 }
 
+handleClose(){
+  this.setState({show: false})
+}
+
 setEdit(admin){
   this.setState({isEditing: true});
   this.setState({title: "Editar administrador"});
@@ -85,33 +98,69 @@ setEdit(admin){
 }
 
 deleteAdmin(id){
-  alert("Se eliminará al administrador " + id);
+  //alert("Se eliminará al administrador " + id);
   //Confirmacion con un popup o alerta
-  var payload = { data: {
-    "idadministrador": id
-  }}
-  axios.delete('http://'+this.state.url+'/administrador/eliminarAdministrador', payload)
-  .then(res => {
-    const persons = res.data;
-    console.log(persons);
-    if(persons.success === 1){
-      alert("Se eliminó el administrador.");
-    }else if(persons.success === 2){
-        alert("No es posible eliminar al administrador. Debe estar registrado al menos uno en el sistema.");
-    }else{
-      alert("Error al eliminar administrador.");
-    }
-    //this.setState({ persons });
-    this.setState({isLoading : false})
-    this.setState({isConnected : true})
-  }).catch(error => {
-   alert(error.message);
-   this.setState({isLoading : false})
-   this.setState({isConnected : false})
- });
+
+    var self = this;
+    var payload = { data: {
+      "idadministrador": id
+    }}
+    axios.delete('http://'+this.state.url+'/administrador/eliminarAdministrador', payload)
+    .then(res => {
+      const persons = res.data;
+      console.log(persons);
+      if(persons.success === 1){
+        //alert("Se eliminó el administrador.");
+        self.showAlert("Administrador eliminado",
+         "Se eliminó al administrador correctamente.",
+         true, "info", "OK",
+         false, "", "");
+        self.setNoAddingAdmins();
+      }else if(persons.success === 2){
+          //alert("No es posible eliminar al administrador. Debe estar registrado al menos uno en el sistema.");
+          self.showAlert("Error al eliminar administrador",
+         "Debe estar registrado al menos un administrador en el sistema.",
+         true, "info", "OK",
+         false, "", "");
+      }else{
+        alert("Error al eliminar administrador.");
+      }
+      //this.setState({ persons });
+      this.setState({isLoading : false})
+      this.setState({isConnected : true})
+    }).catch(error => {
+     alert(error.message);
+     this.setState({isLoading : false})
+     this.setState({isConnected : false})
+   });  
+  
+  
+}
+
+showAlert(title, body, btn1, style1, tBtn1, btn2, style2, tBtn2, data){
+  this.setState({
+    show: true,
+    titleAlert: title,
+    bodyAlert: body,
+    button1: btn1,
+    styleAlert1: style1,
+    titleButtonAlert1: tBtn1,
+    button2: btn2,
+    styleAlert2: style2,
+    titleButtonAlert2: tBtn2,
+  });
+  if(title == "Eliminar administrador"){
+    this.setState({idadministrador: data});
+  }
 
 }
 
+handleAction2(){
+  if(this.state.titleAlert == "Eliminar administrador"){
+    this.deleteAdmin(this.state.idadministrador);
+  }
+  this.setState({show: false});
+}
 setAddingAdmins = event => {
 
 
@@ -126,7 +175,8 @@ setAddingAdmins = event => {
 }
 
 setNoAddingAdmins = event => {
-  this.setState({isAddingAdmins: false});
+  this.gettingAdministradores();
+  this.setState({isAddingAdmins: false, isConnected: true});
 }
 
 handleChange = event => {
@@ -165,10 +215,14 @@ handleSubmit = async event => {
         .then(function (response) {
           
             if(response.data.success === 1){
-                alert("Se modificó el perfil del administrador exitosamente.");
+                //alert("Se modificó el perfil del administrador exitosamente.");
+                self.showAlert("Administrador modificado",
+       "Se modificó el perfil del administrador correctamente.",
+       true, "info", "OK",
+       false, "", "");
                 self.setState({isEditing: false});
                 self.setState({isAddingAdmins:false});
-                self.props.history.push("/administradores");
+                self.setNoAddingAdmins();
             }
             else if(response.data.success === 2){
               alert("Error al modificar el perfil del administrador.");
@@ -192,9 +246,13 @@ handleSubmit = async event => {
       .then(function (response) {
         
           if(response.data.success === 1){
-              alert("Administrador agregado exitosamente.");
+              //alert("Administrador agregado exitosamente.");
+              self.showAlert("Nuevo administrador",
+       "Se agregó al administrador correctamente.",
+       true, "info", "OK",
+       false, "", "");
               self.setNoAddingAdmins();
-              self.props.history.push("/administradores");
+
           }
           else if(response.data.success === 2){
             alert("Error al agregar administrador.");
@@ -222,8 +280,9 @@ handleSubmit = async event => {
 renderAddAdministrador() {
   return (
     <div className="Administrador" >
-    <PageHeader>{this.state.title}</PageHeader>
-      <form onSubmit={this.handleSubmit}>
+    <PageHeader className="tit">{this.state.title}</PageHeader>
+    
+      <form className="Formulario" onSubmit={this.handleSubmit}>
         <FormGroup controlId="nombre" bsSize="short">
           <ControlLabel>Nombre</ControlLabel>
           <FormControl
@@ -281,23 +340,27 @@ renderAddAdministrador() {
 }
 
 renderNotesList(notes) {
-  return [{}].concat(notes).map(
-    (note, i) =>
-      i !== 0
-        ? <ListGroupItem header={note.nombre.trim() + ' ' + note.apellido}>
-
-<div>{note.correo}</div>
-             
+  return (
+    <div className="list">
+    {[{}].concat(notes).map((note, i) =>
+      i !== 0 ? 
+        <ListGroupItem header={note.nombre.trim() + ' ' + note.apellido}>
+          <div>{note.correo}</div>
              <div className='btn-group ml-auto'>
               <button className='delete btn btn-success' 
-              onClick={this.setEdit.bind(this, note)}>Editar</button>
-              
+              onClick={this.setEdit.bind(this, note)}>
+              Editar
+              </button>
               <button className='delete btn btn-danger' 
-              onClick={this.deleteAdmin.bind(this, note.id)}>
+              onClick={
+                this.showAlert.bind(this,"Eliminar administrador",
+                "¿Estás seguro de eliminar al administrador?",
+                true, "info", "Cancelar",
+                true, "danger", "Eliminar", note.id)
+              }>
               Eliminar
               </button>
               </div>
-            
              </ListGroupItem>
         : 
             <ListGroupItem onClick={this.setAddingAdmins}>
@@ -306,28 +369,25 @@ renderNotesList(notes) {
 
               </h4>
             </ListGroupItem>
-  );
+  )}</div>);
+  
 }
 
 renderLander() {
   return (
-    <div className="Administrador">
-      <h1>Parken</h1>
-      <ListGroupItem onClick={this.setAddingAdmins}>
+      <div className="load">
               <h4>
-                <b>{"\uFF0B"}</b> Agregar administrador
-
+                Cargando administradores...
               </h4>
-            </ListGroupItem>
-    </div>
+      </div>
   );
 }
 
 
 renderNotes() {
   return (
-    <div className="Home">
-      <PageHeader>Administradores</PageHeader>
+    <div className="Administrador">
+      <PageHeader className="tit">Administradores</PageHeader>
       <ListGroup>
         {!this.state.isLoading && this.renderNotesList(this.state.persons)}
       </ListGroup>
@@ -342,7 +402,27 @@ render() {
     {this.props.isAuthenticated ? 
     (this.state.isAddingAdmins ? this.renderAddAdministrador() : (this.state.isConnected ? this.renderNotes():this.renderLander())):
     this.props.history.push("/login")}
-    </div>
+    
+    <Modal show={this.state.show} onHide={this.handleClose}>
+    <Modal.Header closeButton>
+      <Modal.Title>{this.state.titleAlert}</Modal.Title>
+    </Modal.Header>
+    <Modal.Body>
+    {this.state.bodyAlert}
+    </Modal.Body>
+    <Modal.Footer>
+      {this.state.button1 ? 
+            <Button bsStyle={this.state.styleAlert1} onClick={this.handleAction1}>{this.state.titleButtonAlert1}</Button>:
+            <div></div>
+          }
+      {this.state.button2 ? 
+      <Button bsStyle={this.state.styleAlert2} onClick={this.handleAction2}>{this.state.titleButtonAlert2}</Button>:
+            <div></div>
+          }
+
+    </Modal.Footer>
+  </Modal>
+  </div>
   );
 }
 }
