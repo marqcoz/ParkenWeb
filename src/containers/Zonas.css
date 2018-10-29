@@ -1,0 +1,39 @@
+.Zonas form {
+    padding-bottom: 0px;
+  }
+
+  .NoSe form {
+    padding-bottom: 0px;
+  }
+  
+  .Zonas form textarea {
+    height: 200px;
+    font-size: 24px;
+  }
+
+  .Mapi{
+    justify-content:center;
+    right: 200px;
+  }
+
+
+  @media all and (min-width: 280px) {
+    .Zonas {
+      padding: 0px 0;
+      text-align: left;
+    }
+  
+    .Zonas form {
+      margin-top: 10px;
+      max-width: 320px;
+      max-height: 1200px;
+    }
+
+    .NoSe form { 
+      margin-top: 10px;
+      max-width: 320px;
+      max-height: 1200px;
+    }
+  }
+
+            

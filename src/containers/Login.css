@@ -1,0 +1,27 @@
+.Login form{
+  margin-top: 0px
+}
+
+.Login .tituloLogin{
+  font-size: 20px;
+  text-align: center;
+}
+
+.Login .subtituloLogin{
+  font-size: 40px;
+  text-align: center;
+  margin-bottom: 30px;
+}
+@media all and (min-width: 480px) {
+    .Login {
+      padding: 60px 0;
+    }
+  
+    .Login form {
+      margin: 0px auto;
+      padding: 40px;
+      max-width: 420px;
+      border-radius: 15px;
+      background-color:white;
+    }
+  }

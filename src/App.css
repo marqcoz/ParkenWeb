@@ -1,32 +1,40 @@
 .App {
-  text-align: center;
+  margin-top: 0px;
+  background-color: #ecf0f1;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
+
+.navbar-default{
+  background-color: #34495E;
+  border-radius: 0%;
+  border-width: 0ch;
+  padding: 0px;
+  font-size: 15px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+  color: #F44336; /*Sets the text hover color on navbar*/
+}
+.navbar-default .navbar-nav > li > a {
+  color: white; /*Change active text color here*/
+}
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active >
+        a:hover, .navbar-default .navbar-nav > .active > a:focus {
+    color: white; /*BACKGROUND color for active*/
+    background: #F44336;   
+}
+.navbar-nav > li > a {
+  /* (80px - line-height of 27px) / 2 = 26.5px */
+  padding-top: 25.5px;
+  padding-bottom: 25.5px;
+  line-height: 20px;
+}
+.navbar-brand {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-items: center; 
+  margin: 10px;
+}
+.navbar-brand>img {
+  padding: 14px 14px;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}

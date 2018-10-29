@@ -1,0 +1,10 @@
+@media all and (min-width: 480px) {
+    .NuevoAdmin {
+      padding: 60px 0;
+    }
+  
+    .NuevoAdmin form {
+      margin: 0 auto;
+      max-width: 320px;
+    }
+  }

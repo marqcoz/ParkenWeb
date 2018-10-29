@@ -1,0 +1,21 @@
+.Administrador form {
+    padding-bottom: 15px;
+  }
+  
+  .Administrador form textarea {
+    height: 300px;
+    font-size: 24px;
+  }
+
+
+  @media all and (min-width: 280px) {
+    .Administrador {
+      padding: 0px 0;
+      text-align: left;
+    }
+  
+    .Administrador form {
+      margin: 0 auto;
+      max-width: 320px;
+    }
+  }

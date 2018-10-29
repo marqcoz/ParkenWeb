@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<!-- saved from url=(0027)http://localhost:3001/login -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="theme-color" content="#000000">
+    <!--
+      manifest.json provides metadata used when your web app is added to the
+      homescreen on Android. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="http://localhost:3001/manifest.json">
+    <link rel="stylesheet" href="./Parken_files/bootstrap.min.css">
+    <!--
+      Notice the use of  in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>Parken</title>
+  <style type="text/css">body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+select.form-control,
+textarea.form-control,
+input.form-control {
+  font-size: 16px;
+}
+input[type=file] {
+  width: 100%;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+</style><style type="text/css">.Home .lander {
+    padding: 80px 0;
+    text-align: center;
+  }
+  
+  .Home .lander h1 {
+    font-family: "Open Sans", sans-serif;
+    font-weight: 600;
+  }
+  
+  .Home .lander p {
+    color: #FF34495E;
+  }
+
+  .Home .notes h4 {
+    font-family: "Open Sans", sans-serif;
+    font-weight: 600;
+    overflow: hidden;
+    line-height: 1.5;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .Home .notes p {
+    color: #666;
+  }</style><style type="text/css">.NotFound {
+    padding-top: 100px;
+    text-align: center;
+  }</style><style type="text/css">.LoaderButton .spinning.glyphicon {
+    margin-right: 7px;
+    top: 2px;
+    -webkit-animation: spin 1s infinite linear;
+            animation: spin 1s infinite linear;
+  }
+  @-webkit-keyframes spin {
+    from { -webkit-transform: scale(1) rotate(0deg); transform: scale(1) rotate(0deg); }
+    to { -webkit-transform: scale(1) rotate(360deg); transform: scale(1) rotate(360deg); }
+  }
+  @keyframes spin {
+    from { -webkit-transform: scale(1) rotate(0deg); transform: scale(1) rotate(0deg); }
+    to { -webkit-transform: scale(1) rotate(360deg); transform: scale(1) rotate(360deg); }
+  }</style><style type="text/css">.Login form{
+  margin-top: 0px
+}
+@media all and (min-width: 480px) {
+    .Login {
+      padding: 60px 0;
+    }
+  
+    .Login form {
+      margin: 0 auto;
+      max-width: 320px;
+    }
+  }</style><style type="text/css">.Administrador form {
+    padding-bottom: 15px;
+  }
+  
+  .Administrador form textarea {
+    height: 300px;
+    font-size: 24px;
+  }
+
+
+  @media all and (min-width: 280px) {
+    .Administrador {
+      padding: 0px 0;
+      text-align: left;
+    }
+  
+    .Administrador form {
+      margin: 0 auto;
+      max-width: 320px;
+    }
+  }</style><style type="text/css">@media all and (min-width: 480px) {
+    .NuevoAdmin {
+      padding: 60px 0;
+    }
+  
+    .NuevoAdmin form {
+      margin: 0 auto;
+      max-width: 320px;
+    }
+  }</style><style type="text/css">.Zonas form {
+    padding-bottom: 0px;
+  }
+
+  .NoSe form {
+    padding-bottom: 0px;
+  }
+  
+  .Zonas form textarea {
+    height: 200px;
+    font-size: 24px;
+  }
+
+  .Mapi{
+    justify-content:center;
+    right: 200px;
+  }
+
+
+  @media all and (min-width: 280px) {
+    .Zonas {
+      padding: 0px 0;
+      text-align: left;
+    }
+  
+    .Zonas form {
+      margin-top: 10px;
+      max-width: 320px;
+      max-height: 1200px;
+    }
+
+    .NoSe form { 
+      margin-top: 10px;
+      max-width: 320px;
+      max-height: 1200px;
+    }
+  }
+
+            
+</style><style type="text/css">.react-phone-number-input__row
+{
+	/* This is done to stretch the contents of this component */
+	display     : flex;
+	align-items : center;
+}
+
+.react-phone-number-input__phone
+{
+	/* The phone number input stretches to fill all empty space */
+	flex : 1 1;
+
+	/* The phone number input should shrink
+	   to make room for the extension input */
+	min-width : 0;
+}
+
+.react-phone-number-input__icon
+{
+	/* The flag icon size is 4x3 hence the exact `width` and `height` values */
+	width      : 1.24em;
+	height     : 0.93em;
+
+	/* `1px` is still too much for a "retina" screen but there's no way in CSS to specify "hairline" border width. */
+	border     : 1px solid rgba(0, 0, 0, 0.5);
+
+	/* Makes sure `width`x`height` is exactly `4x3` and `border` width is not included in it */
+	box-sizing : content-box;
+}
+
+.react-phone-number-input__icon--international
+{
+	/* The international icon size is square */
+	/* and also has no border hence the `2 * 1px` `width` and `height` compensation */
+	width  : calc(0.93em + 2px);
+	height : calc(0.93em + 2px);
+
+	/* The international icon size is square hence the exact `padding` value */
+	/* for precise alignment with `4x3` sized country flags. */
+	padding-left  : 0.155em;
+	padding-right : 0.155em;
+
+	border : none;
+}
+
+.react-phone-number-input__error
+{
+	margin-left : calc(1.24em + 2px + 0.3em + 0.35em + 0.5em);
+	margin-top  : calc(0.3rem);
+	color       : #D30F00;
+}
+
+.react-phone-number-input__icon-image
+{
+	max-width  : 100%;
+	max-height : 100%;
+}
+
+/* Removes `<input type="number"/>` up/down arrows in Webkit browsers. */
+.react-phone-number-input__ext-input::-webkit-inner-spin-button,
+.react-phone-number-input__ext-input::-webkit-outer-spin-button
+{
+	margin             : 0 !important;
+	-webkit-appearance : none !important;
+	-moz-appearance    : textfield !important;
+}
+
+.react-phone-number-input__ext-input
+{
+	width : 3em;
+}
+
+.react-phone-number-input__ext
+{
+	white-space: nowrap;
+}
+
+.react-phone-number-input__ext,
+.react-phone-number-input__ext-input
+{
+	margin-left : 0.5em;
+}
+
+/* Styling native country `<select/>`. */
+
+.react-phone-number-input__country--native
+{
+	position     : relative;
+	align-self   : stretch;
+	display      : flex;
+	align-items  : center;
+	margin-right : 0.5em;
+}
+
+.react-phone-number-input__country-select
+{
+	position : absolute;
+	top      : 0;
+	left     : 0;
+	height   : 100%;
+	width    : 100%;
+	z-index  : 1;
+	border   : 0;
+	opacity  : 0;
+	cursor   : pointer;
+}
+
+.react-phone-number-input__country-select-arrow
+{
+	display            : block;
+	content            : '';
+	width              : 0;
+	height             : 0;
+	margin-bottom      : 0.1em;
+	margin-top         : 0.3em;
+	margin-left        : 0.3em;
+	border-width       : 0.35em 0.2em 0 0.2em;
+	border-style       : solid;
+	border-left-color  : transparent;
+	border-right-color : transparent;
+	color              : #B8BDC4;
+	opacity            : 0.7;
+	transition         : color 0.1s;
+}
+
+/* Something from stackoverflow. */
+.react-phone-number-input__country-select-divider
+{
+	font-size  : 1px;
+	background : black;
+}
+
+.react-phone-number-input__country-select:focus + .react-phone-number-input__country-select-arrow
+{
+	color : #03B2CB;
+}
+
+/* Styling phone number input */
+
+.react-phone-number-input__input
+{
+	height        : calc(0.3rem * 6);
+	outline       : none;
+	border-radius : 0;
+	padding       : 0;
+	-webkit-appearance    : none;
+	   -moz-appearance    : none;
+	        appearance    : none;
+	border        : none;
+	border-bottom : 1px solid #C5D2E0;
+	transition    : border 0.1s;
+	font-size     : inherit;
+}
+
+.react-phone-number-input__input:focus
+{
+	border-color : #03B2CB;
+}
+
+.react-phone-number-input__input--disabled
+{
+	cursor : default;
+}
+
+.react-phone-number-input__input--invalid,
+.react-phone-number-input__input--invalid:focus
+{
+	border-color : #EB2010;
+}
+
+/* Overrides Chrome autofill yellow background color */
+.react-phone-number-input__input:-webkit-autofill
+{
+	box-shadow : 0 0 0 1000px white inset;
+}
+
+/* A small fix for `react-responsive-ui` */
+.react-phone-number-input__country .rrui__select__button
+{
+	border-bottom : none;
+}</style><style type="text/css">.Supervisor form {
+    padding-bottom: 15px;
+    text-align: left;
+  }
+  
+  .Supervisor form textarea {
+    height: 300px;
+    font-size: 24px;
+    
+  }
+
+
+  @media all and (min-width: 280px) {
+    .Supervisor {
+      padding: 0px 0;
+      text-align: left;
+    }
+  
+    .Supervisor form {
+      margin: 0 auto;
+      max-width: 320px;
+    }
+  }</style><style type="text/css">.App {
+  margin-top: 0px;
+}
+
+
+.navbar-default{
+  background-color: #34495E;
+  border-radius: 0%;
+  border-width: 0ch;
+  padding: 0px;
+  font-size: 15px;
+}
+
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+  color: #F44336; /*Sets the text hover color on navbar*/
+}
+.navbar-default .navbar-nav > li > a {
+  color: white; /*Change active text color here*/
+}
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active >
+        a:hover, .navbar-default .navbar-nav > .active > a:focus {
+    color: white; /*BACKGROUND color for active*/
+    background: #F44336;   
+}
+.navbar-nav > li > a {
+  /* (80px - line-height of 27px) / 2 = 26.5px */
+  padding-top: 23.5px;
+  padding-bottom: 24.5px;
+  line-height: 20px;
+}
+.navbar-brand {
+  display: flex;
+  align-items: center; 
+  margin: 10px;
+}
+.navbar-brand>img {
+  padding: 14px 14px;
+}
+
+</style><script charset="utf-8" src="./Parken_files/main.b32075996536bf0bfa08.hot-update.js"></script><script charset="utf-8" src="./Parken_files/main.1db8e839914100cb86c7.hot-update.js"></script><script charset="utf-8" src="./Parken_files/main.bdb4230b83af6d1aaace.hot-update.js"></script><script charset="utf-8" src="./Parken_files/main.3a5bafe2676d789f2ef6.hot-update.js"></script><script charset="utf-8" src="./Parken_files/main.0628b94c1148cd6b6a23.hot-update.js"></script></head>
+  <body>
+    <noscript>
+      You need to enable JavaScript to run this app.
+    </noscript>
+    <div id="root"><div class="App"><div class="Nav"><nav class="navbar navbar-default"><div class="container-fluid"><div class="navbar-header"><a class="navbar-brand" href="http://localhost:3001/"><img src="./Parken_files/parkicon.d44b6067.ico" style="width: 80px;"></a><button type="button" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button></div><div class="navbar-collapse collapse"><ul class="nav navbar-nav navbar-right"><li role="presentation" class="active"><a href="http://localhost:3001/login">Iniciar sesión</a></li></ul></div></div></nav></div><div class="Login"><form><img src="./Parken_files/ParkenLogo.25c0481b.png" width="100" height="100" class=""><div>Parken</div><div class="form-group form-group-lg"><label for="email" class="control-label">Correo electrónico</label><input type="email" id="email" class="form-control" value=""></div><div class="form-group form-group-lg"><label for="password" class="control-label">Contraseña</label><input type="password" id="password" class="form-control" value=""></div><div></div><button disabled="" type="submit" class="LoaderButton  btn btn-lg btn-default btn-block">Iniciar sesión</button></form></div></div></div>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+  <script src="./Parken_files/bundle.js"></script><script src="./Parken_files/0.chunk.js"></script><script src="./Parken_files/main.chunk.js"></script><script src="./Parken_files/main.1c5cf1034a601db904cf.hot-update.js"></script>
+
+</body></html>
