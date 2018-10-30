@@ -60,7 +60,7 @@ handleClose(){
 
 handleAction2(){
   if(this.state.titleAlert === "Eliminar supervisor"){
-    this.deleteAdmin(this.state.idadministrador);
+    this.deleteSuper(this.state.idsupervisor);
   }
   this.setState({show: false});
 }
@@ -258,19 +258,32 @@ handleSubmit = async event => {
   this.setState({ isLoading: true });
 
   if(!this.validatePassword()){
-    alert("Las contraseñas no coinciden");
+    //alert("Las contraseñas no coinciden");
+    this.showAlert("Atención",
+         "Las contraseñas no coinciden",
+         true, "info", "OK",
+         false, "", "");
     this.setState({ isLoading: false });
     return;
   }
 
   if(this.state.celular == null){
     this.setState({ isLoading: false });
-    alert("Ingrese el número celular");
+    //alert("Ingrese el número celular");
+    this.showAlert("Atención",
+    "Ingrese el número celular",
+    true, "info", "OK",
+    false, "", "");
       return;
   }
   if(!isValidPhoneNumber(this.state.celular)){
     this.setState({ isLoading: false });
-    alert("Número celular no válido");
+    //alert("Número celular no válido");
+    this.showAlert("Atención",
+    "Número celular no válido",
+    true, "info", "OK",
+    false, "", "");
+    
       return;
   }
 
@@ -403,7 +416,7 @@ showAlert(title, body, btn1, style1, tBtn1, btn2, style2, tBtn2, data){
     titleButtonAlert2: tBtn2,
   });
   if(title === "Eliminar supervisor"){
-    this.setState({idadministrador: data});
+    this.setState({idsupervisor: data});
   }
 
 }
