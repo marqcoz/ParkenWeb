@@ -46,9 +46,8 @@ class App extends Component {
     localStorage.setItem("isLogged", newAuth);
   }
 
-  editProfile = event => {
+  editProfile() {
     this.setState({isEditProfile: true});
-    this.props.history.push("/administradores");
   }
 
   setInfoAdministrador = (id, nombre, apellido, email, password) => {

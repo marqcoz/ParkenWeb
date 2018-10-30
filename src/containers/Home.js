@@ -22,6 +22,11 @@ export default class Home extends Component {
       this.props.history.push("/login");
     }
   }
+
+  irAEditar(){
+    this.props.setEditProfile();
+    this.props.history.push("/administradores");
+  }
   render() {
     return (
       <div className="Home">
@@ -38,7 +43,7 @@ export default class Home extends Component {
       </div>
       
         <div className="subtituloHome">
-        <Button bsStyle="success" onClick={this.props.editProfile}>Editar</Button>
+        <Button bsStyle="success" onClick={this.irAEditar}>Editar</Button>
         </div>
       </form>
     </div>
