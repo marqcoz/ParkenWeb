@@ -14,7 +14,8 @@ export default class Home extends Component {
     nombre : this.props.nombre,
     apellido: this.props.apellido,
     email: this.props.email,
-    password: this.props.password 
+    password: this.props.password,
+    isInBD: false
   };
 
   this.irAEditar = this.irAEditar.bind(this);
@@ -25,10 +26,11 @@ export default class Home extends Component {
     if(localStorage.getItem("isLogged") === "false"){
         this.props.history.push("/");
     }else{
-      var r = this.verificarAdmin();
+      console.log(this.state.isInBD);
+      this.verificarAdmin();
       console.log("Verificar");
-      console.log(r);
-      if( r === 0){
+      console.log(this.state.isInBD);
+      if(!this.state.isInBD){
         this.props.handleLogout();
       }
     }
@@ -41,17 +43,17 @@ export default class Home extends Component {
         if(res.data.success === 1){
           this.setState({isLoading : false})
           this.setState({isConnected : true})
-          return 1;
+          this.setState({isInBD: true});
         }else{
           this.setState({isLoading : false})
           this.setState({isConnected : false})
-          return 0;
+          this.setState({isInBD: false});
         }
     }).catch(error => {
         alert(error.message);
         this.setState({isLoading : false})
         this.setState({isConnected : false})
-        return 2;
+        this.setState({isInBD: true});
     });
   }
 
