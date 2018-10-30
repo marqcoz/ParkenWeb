@@ -56,7 +56,8 @@ class App extends Component {
       nombre: nombre,
       apellido: apellido,
       email: email,
-      password: password
+      password: password,
+      isEditProfile: false
     });
     localStorage.setItem("idadministrador", id);
     localStorage.setItem("nombreadministrador", nombre);

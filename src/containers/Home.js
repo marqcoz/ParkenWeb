@@ -37,7 +37,7 @@ export default class Home extends Component {
       </div>
       </div>
       <div className="subtituloHome">
-      {localStorage.getItem("nombreadministrador")}{"\n"}
+      {localStorage.getItem("nombreadministrador")}
       {localStorage.getItem("apellidoadministrador")}{"\n"}
       {localStorage.getItem("emailadministrador")}{"\n"}
       </div>
