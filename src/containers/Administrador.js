@@ -51,6 +51,7 @@ componentDidMount() {
    this.setState({isAddingAdmins: true});
    this.setState({isLoading : false})
    this.setState({isConnected : true})
+   this.props.editProfileOff();
   }else{
     this.gettingAdministradores();
   }

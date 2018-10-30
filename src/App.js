@@ -31,6 +31,7 @@ class App extends Component {
     this.handleClose = this.handleClose.bind(this);
     this.handleShow = this.handleShow.bind(this);
     this.editProfile = this.editProfile.bind(this);
+    this.editProfileOff = this.editProfileOff.bind(this);
   }
 
   componentDidMount(){
@@ -44,6 +45,10 @@ class App extends Component {
     this.setState({ isAuthenticated: authenticated});
     var newAuth = ('true' === authenticated );
     localStorage.setItem("isLogged", newAuth);
+  }
+
+  editProfileOff(){
+    this.setState({isEditProfile: false});
   }
 
   editProfile() {
@@ -95,6 +100,7 @@ class App extends Component {
       email: this.state.email,
       password: this.state.password,
       setInfoAdministrador: this.setInfoAdministrador,
+      editProfileOff: this.editProfileOff,
       editProfile : this.editProfile,
       isEditProfile : this.state.isEditProfile
     };
