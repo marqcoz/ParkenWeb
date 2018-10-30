@@ -42,7 +42,7 @@ export default class Supervisor extends Component {
   this.handleChangeCel = this.handleChangeCel.bind(this);
   this.gettingZonasParken = this.gettingZonasParken.bind(this);
   this.infoSuper = this.infoSuper.bind(this);
-  this.gettingSupervisoresXZona = this.infoSuper.bind(this);
+  this.gettingSupervisoresXZona = this.gettingSupervisoresXZona.bind(this);
   this.showAlert = this.showAlert.bind(this);
 
 }
