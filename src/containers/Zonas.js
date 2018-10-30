@@ -234,7 +234,7 @@ onMarkerClicked = (props, marker, e) => {
         }
       };
       for(var i = 0; i < this.state.markers.length; i++){
-        if(this.state.markers[i].coordinates.lat==newEle.coordinates.lat && this.state.markers[i].coordinates.lng==newEle.coordinates.lng){
+        if(this.state.markers[i].coordinates.lat===newEle.coordinates.lat && this.state.markers[i].coordinates.lng===newEle.coordinates.lng){
           this.state.markers.splice(i, 1);
           break;
         }

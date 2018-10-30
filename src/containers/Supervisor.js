@@ -44,11 +44,25 @@ export default class Supervisor extends Component {
   this.infoSuper = this.infoSuper.bind(this);
   this.gettingSupervisoresXZona = this.gettingSupervisoresXZona.bind(this);
   this.showAlert = this.showAlert.bind(this);
+  this.handleClose = this.handleClose.bind(this);
+  this.handleAction1 = this.handleClose.bind(this);
+  this.handleAction2 = this.handleAction2.bind(this);
 
 }
 
 componentDidMount() {
  this.gettingSupervisoresXZona();
+}
+
+handleClose(){
+  this.setState({show: false})
+}
+
+handleAction2(){
+  if(this.state.titleAlert === "Eliminar supervisor"){
+    this.deleteAdmin(this.state.idadministrador);
+  }
+  this.setState({show: false});
 }
 
 async gettingSupervisoresXZona(){
@@ -129,24 +143,42 @@ deleteSuper(id){
          "Se eliminó al administrador correctamente.",
          true, "info", "OK",
          false, "", "");
-      this.gettingSupervisoresXZona();
-      this.setState({isAddingSupers:false, isConnected: true});
+      self.gettingSupervisoresXZona();
+      self.setState({isAddingSupers:false, isConnected: true});
     }else if(supervisor.success === 2){
-        if(supervisor.error == '0'){
-            alert("No se puede eliminar al supervisor, debe existir al menos un supervisor en la zona Parken.");    
+        if(supervisor.error === '0'){
+            //alert("No se puede eliminar al supervisor, debe existir al menos un supervisor en la zona Parken.");    
+            self.showAlert("Error al eliminar supervisor",
+            "Debe existir al menos un supervisor en cada zona Parken.",
+            true, "info", "OK",
+            false, "", "");
+            self.setState({isAddingSupers:false, isConnected: true});
         }else{
-            if(supervisor.error == '5'){
-                alert("No se puede eliminar al supervisor, tiene reportes pendientes.");
+            if(supervisor.error === '5'){
+                //alert("No se puede eliminar al supervisor, tiene reportes pendientes.");
+                self.showAlert("Error al eliminar supervisor",
+                "El supervisor tiene reportes pendientes.",
+                true, "info", "OK",
+                false, "", "");
+      
             }else{
-                alert("Error al eliminar administrador.");
+                //alert("Error al eliminar administrador.");
+                self.showAlert("Error al eliminar supervisor",
+                "Ocurrió un error con el servidor.",
+                true, "info", "OK",
+                false, "", "");
             }
         }
     }else{
-      alert("Error al eliminar administrador.");
+      //alert("Error al eliminar administrador.");
+      self.showAlert("Error 501",
+        "Error al eliminar supervisor",
+        true, "info", "OK",
+        false, "", "");
     }
     //this.setState({ persons });
-    this.setState({isLoading : false})
-    this.setState({isConnected : true})
+    self.setState({isLoading : false})
+    self.setState({isConnected : true})
   }).catch(error => {
    alert(error.message);
    this.setState({isLoading : false})
@@ -267,20 +299,36 @@ handleSubmit = async event => {
         .then(function (response) {
           
             if(response.data.success === 1){
-                alert("Se modificó el perfil del supervisor exitosamente.");
+                //alert("Se modificó el perfil del supervisor exitosamente.");
+                self.showAlert("Supervisor modificado",
+                "Se modificó el perfil del supervisor exitosamente.",
+                true, "info", "OK",
+                false, "", "");
                 self.setState({isEditing: false});
                 self.setState({isAddingSupers:false});
-                this.gettingSupervisoresXZona();
-                this.setState({isAddingSupers:false, isConnected: true});
+                self.gettingSupervisoresXZona();
+                self.setState({isAddingSupers:false, isConnected: true});
             }
             else if(response.data.success === 2){
-              alert("Error al modificar el perfil del supervisor.");
+              //alert("Error al modificar el perfil del supervisor.");
+              self.showAlert("Error",
+                "Error al modificar el perfil del supervisor.",
+                true, "info", "OK",
+                false, "", "");
             }
             else{
               if(response.data.success === 0 || response.data.error === 2)
-                alert("Error al modificar el perfil del supervisor.");
+                //alert("Error al modificar el perfil del supervisor.");
+                self.showAlert("Error",
+                "Error al modificar el perfil del supervisor.",
+                true, "info", "OK",
+                false, "", "");
               else
-                alert("Error al modificar el perfil del supervisor.");
+                //alert("Error al modificar el perfil del supervisor.");
+                self.showAlert("Error",
+                "Error al modificar el perfil del supervisor.",
+                true, "info", "OK",
+                false, "", "");
         }
         })
         .catch(function (error) {
@@ -294,20 +342,36 @@ handleSubmit = async event => {
         await axios.post('http://'+this.state.url+'/administrador/agregarSupervisor', payload)
         .then(function (response) {
         console.log(response);
-          if(response.data.success == 1){
-              alert("Supervisor agregado exitosamente.");
+          if(response.data.success === 1){
+              //alert("Supervisor agregado exitosamente.");
+              self.showAlert("Supervisor agregado",
+                "Se agregó exitosamente el supervisor a la zona Parken.",
+                true, "info", "OK",
+                false, "", "");
               self.setNoAddingAdmins();
               self.gettingSupervisoresXZona();
               self.setState({isAddingSupers: false, isConnected: true});
           }
           else {
-            if(response.data.success == 2){
-                alert(response.data.error);
+            if(response.data.success === 2){
+                //alert(response.data.error);
+                self.showAlert("Error 222",
+                response.data.error,
+                true, "info", "OK",
+                false, "", "");
             }else{
                 if(response.data.success === 0){
-                    alert(response.data.error);
+                    //alert(response.data.error);
+                    self.showAlert("Error 100",
+                    response.data.error,
+                    true, "info", "OK",
+                    false, "", "");
                 }else{
-                    alert("Error al agregar supervisor.");
+                    //alert("Error al agregar supervisor.");
+                    self.showAlert("Error 512",
+                    "Error al agregar supervisor.",
+                    true, "info", "OK",
+                    false, "", "");
                 }
             }
         }
@@ -338,7 +402,7 @@ showAlert(title, body, btn1, style1, tBtn1, btn2, style2, tBtn2, data){
     styleAlert2: style2,
     titleButtonAlert2: tBtn2,
   });
-  if(title == "Eliminar administrador"){
+  if(title === "Eliminar supervisor"){
     this.setState({idadministrador: data});
   }
 
@@ -476,7 +540,10 @@ renderSupersList(supers) {
               Editar
               </button>
               <button className='delete btn btn-danger' 
-              onClick={this.deleteSuper.bind(this, supervisor.id)}>
+              onClick={this.showAlert.bind(this,"Eliminar supervisor",
+              "¿Estás seguro de eliminar al supervisor?",
+              true, "info", "Cancelar",
+              true, "danger", "Eliminar", supervisor.id)}>
               Eliminar
               </button>
               </div>

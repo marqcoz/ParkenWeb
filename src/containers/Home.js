@@ -3,13 +3,8 @@ import "./Home.css";
 
 export default class Home extends Component {
 
-  constructor(props) {
-    super(props);
-
-  };
-
   componentDidMount(){
-    if(localStorage.getItem("isLogged") == "false"){
+    if(localStorage.getItem("isLogged") === "false"){
       this.props.history.push("/login");
     }
   }

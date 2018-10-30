@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {Modal, Button,Popover, PageHeader, FormGroup, FormControl, ControlLabel, ListGroup, ListGroupItem } from "react-bootstrap";
+import {Modal, Button, PageHeader, FormGroup, FormControl, ControlLabel, ListGroup, ListGroupItem } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import axios from 'axios';
 import "./Administrador.css";
@@ -149,14 +149,14 @@ showAlert(title, body, btn1, style1, tBtn1, btn2, style2, tBtn2, data){
     styleAlert2: style2,
     titleButtonAlert2: tBtn2,
   });
-  if(title == "Eliminar administrador"){
+  if(title === "Eliminar administrador"){
     this.setState({idadministrador: data});
   }
 
 }
 
 handleAction2(){
-  if(this.state.titleAlert == "Eliminar administrador"){
+  if(this.state.titleAlert === "Eliminar administrador"){
     this.deleteAdmin(this.state.idadministrador);
   }
   this.setState({show: false});

@@ -22,7 +22,7 @@ export default class Login extends Component {
   }
 
   componentDidMount(){
-    if(localStorage.getItem("isLogged") == "true"){
+    if(localStorage.getItem("isLogged") === "true"){
       this.props.history.push("/");
     }
   }

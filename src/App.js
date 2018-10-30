@@ -26,7 +26,7 @@ class App extends Component {
   }
 
   componentDidMount(){
-    var newAuth = ('true' == localStorage.getItem("isLogged") );
+    var newAuth = ('true' === localStorage.getItem("isLogged") );
     this.setState({isAuthenticated: newAuth});
     this.setState({isAuthenticating:false})
   }
@@ -34,7 +34,7 @@ class App extends Component {
   
   userHasAuthenticated = authenticated => {
     this.setState({ isAuthenticated: authenticated});
-    var newAuth = ('true' == authenticated );
+    var newAuth = ('true' === authenticated );
     localStorage.setItem("isLogged", newAuth);
   }
 
@@ -71,7 +71,7 @@ class App extends Component {
           <Navbar.Header>
             <Navbar.Brand >
             <Link to="/">
-              <img src={require("./containers/parkicon.ico")} style={{width:80}}/>
+              <img alt="Parken" src={require("./containers/parkicon.ico")} style={{width:80}}/>
             </Link>
             </Navbar.Brand>
             <Navbar.Toggle />
