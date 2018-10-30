@@ -13,9 +13,9 @@ class App extends Component {
     this.state = {
       isAuthenticated: false,
       isAuthenticating: true,
-      //host:"ec2-13-59-249-172.us-east-2.compute.amazonaws.com",
-      host:"localhost",
-      port:"3000",
+      host:"3.16.52.71",
+      //host:"localhost",
+      port:"3001",
       show: false
     };
 
