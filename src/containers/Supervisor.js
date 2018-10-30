@@ -315,7 +315,6 @@ handleSubmit = async event => {
 }
 
 infoSuper(supervisor){
-    alert("verga");
     this.setState({title: "Supervisor " + supervisor.nombre + " "+ supervisor.apellido});
     this.setState({nombre: supervisor.nombre}); 
     this.setState({apellido: supervisor.apellido}); 
