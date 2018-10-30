@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import {Modal, Button, PageHeader, FormGroup, FormControl, ControlLabel, ListGroup, ListGroupItem } from "react-bootstrap";
+import { LinkContainer } from "react-router-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import PhoneInput from 'react-phone-number-input';
 import { isValidPhoneNumber } from 'react-phone-number-input';
@@ -199,7 +200,6 @@ setAddingSupers = event => {
     direccion: "",
     estatus: "",
 });     
-this.props.history.push("/supervisores");
     this.gettingZonasParken();
   this.setState({title: "Agregar supervisor", isAddingSupers: true});
 }
@@ -561,9 +561,12 @@ renderSupersList(supers) {
              </ListGroupItem>
         : 
             <ListGroupItem onClick={this.setAddingSupers}>
+            <LinkContainer to="/supervisores">
+                
               <h4>
                 <b>{"\uFF0B"}</b> Agregar supervisor
               </h4>
+              </LinkContainer>
             </ListGroupItem>
   )}</div>);
 }
