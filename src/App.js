@@ -71,7 +71,7 @@ class App extends Component {
     localStorage.setItem("passwordadministrador", password);
   }
 
-  handleLogout = event => {
+  handleLogout() {
     this.userHasAuthenticated(false);
     //localStorage.setItem("isLogged", false);
     this.props.history.push("/login");
@@ -92,6 +92,7 @@ class App extends Component {
     const childProps = {
       isAuthenticated: this.state.isAuthenticated,
       userHasAuthenticated: this.userHasAuthenticated,
+      handleLogout : this.handleLogout,
       host: this.state.host,
       port: this.state.port,
       idadministrador: this.state.idadministrador,
