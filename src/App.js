@@ -48,6 +48,7 @@ class App extends Component {
 
   editProfile() {
     this.setState({isEditProfile: true});
+    this.props.history.push("/administradores");
   }
 
   setInfoAdministrador = (id, nombre, apellido, email, password) => {

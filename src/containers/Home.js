@@ -25,8 +25,7 @@ export default class Home extends Component {
   }
 
   irAEditar(){
-    this.props.editProfile();
-    this.props.history.push("/administradores");
+    this.props.editProfile();    
   }
   render() {
     return (
