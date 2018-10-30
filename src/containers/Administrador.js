@@ -130,6 +130,9 @@ deleteAdmin(id){
          "Se eliminó al administrador correctamente.",
          true, "info", "OK",
          false, "", "");
+         if(this.state.idadministrador.toString() === localStorage.getItem("idadministrador").toString()){
+           self.props.handleLogout();
+         }
         self.setNoAddingAdmins();
       }else if(persons.success === 2){
           //alert("No es posible eliminar al administrador. Debe estar registrado al menos uno en el sistema.");
