@@ -31,11 +31,12 @@ export default class Home extends Component {
       <img alt="Logo administrador" src={require("./ic_user-web.png")} style={{width:150}}/>
       </div>
       </div>
-      <div className="subtituloHome"></div>
-      <div className="subtituloHome">{localStorage.getItem("nombreadministrador")}</div>
-      <div className="subtituloHome">{localStorage.getItem("apellidodministrador")}</div>
-      <div className="subtituloHome">{localStorage.getItem("emailadministrador")}</div>
-      <div className="subtituloHome">{localStorage.getItem("passwordadministrador")}</div>
+      <div className="subtituloHome">
+      <br>{localStorage.getItem("nombreadministrador")}</br>
+      <br>{localStorage.getItem("apellidoadministrador")}</br>
+      <br>{localStorage.getItem("emailadministrador")}</br>
+      </div>
+      
         <div className="subtituloHome">
         <Button bsStyle="success">Editar</Button>
         </div>
