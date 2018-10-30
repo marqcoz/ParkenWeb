@@ -242,7 +242,7 @@ handleSubmit = async event => {
                 console.log(localStorage.getItem("idadministrador"));
                 if(response.data.id.toString() === localStorage.getItem("idadministrador").toString()){
                   localStorage.getItem("Entro");
-                  this.props.setInfoAdministrador(response.data.id, response.data.nombre, response.data.apellido, response.data.email, response.data.password);
+                  self.props.setInfoAdministrador(response.data.id, response.data.nombre, response.data.apellido, response.data.email, response.data.password);
                 }
             }
             else if(response.data.success === 2){
