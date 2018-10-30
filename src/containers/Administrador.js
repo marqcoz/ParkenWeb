@@ -237,7 +237,11 @@ handleSubmit = async event => {
                 self.setState({isEditing: false});
                 self.setState({isAddingAdmins:false});
                 self.setNoAddingAdmins();
+                console.log("ALERTE");
+                console.log(response.data.id);
+                console.log(localStorage.getItem("idadministrador"));
                 if(response.data.id === localStorage.getItem("idadministrador")){
+                  localStorage.getItem("Entro");
                   this.props.setInfoAdministrador(response.data.id, response.data.nombre, response.data.apellido, response.data.email, response.data.password);
                 }
             }
