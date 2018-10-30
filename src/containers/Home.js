@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {Button} from "react-bootstrap";
+import {Button, Image} from "react-bootstrap";
 import "./Home.css";
 
 export default class Home extends Component {
@@ -26,12 +26,13 @@ export default class Home extends Component {
     return (
       <div className="Home">
       <form onSubmit={this.handleSubmit}>
-      <div className="tituloHome">Bienvenido administrador</div>
+      <div className="tituloHome">Bienvenido + {localStorage.getItem("nombreadministrador")}</div>
+      <Image src={require("./ic_user-web.png")}/>
       <div className="subtituloHome">Perfil</div>
-      <div className="subtituloHome">{this.state.nombre}</div>
-      <div className="subtituloHome">{this.state.apellido}</div>
-      <div className="subtituloHome">{this.state.email}</div>
-      <div className="subtituloHome">{this.state.password}</div>
+      <div className="subtituloHome">{localStorage.getItem("nombreadministrador")}</div>
+      <div className="subtituloHome">{localStorage.getItem("apellidodministrador")}</div>
+      <div className="subtituloHome">{localStorage.getItem("emailadministrador")}</div>
+      <div className="subtituloHome">{localStorage.getItem("passwordadministrador")}</div>
         <div className="subtituloHome">
         <Button bsStyle="success">Editar</Button>
         </div>

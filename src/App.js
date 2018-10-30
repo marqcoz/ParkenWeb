@@ -51,6 +51,11 @@ class App extends Component {
       email: email,
       password: password
     });
+    localStorage.setItem("idadministrador", id);
+    localStorage.setItem("nombreadministrador", nombre);
+    localStorage.setItem("apellidoadministrador", apellido);
+    localStorage.setItem("emailadministrador", email);
+    localStorage.setItem("passwordadministrador", password);
   }
 
   handleLogout = event => {
