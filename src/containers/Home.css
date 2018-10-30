@@ -11,6 +11,8 @@
   .Home .tituloHome{
     font-size: 20px;
     text-align: center;
+    align-content: center;
+    align-items: center;
   }
   
   .Home .subtituloHome{
