@@ -32,9 +32,9 @@ export default class Home extends Component {
       </div>
       </div>
       <div className="subtituloHome">
-      <br>{localStorage.getItem("nombreadministrador")}</br>
-      <br>{localStorage.getItem("apellidoadministrador")}</br>
-      <br>{localStorage.getItem("emailadministrador")}</br>
+      {localStorage.getItem("nombreadministrador")}{"\n"}
+      {localStorage.getItem("apellidoadministrador")}{"\n"}
+      {localStorage.getItem("emailadministrador")}{"\n"}
       </div>
       
         <div className="subtituloHome">
