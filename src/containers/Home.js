@@ -9,6 +9,7 @@ export default class Home extends Component {
     super(props);
 
   this.state = {
+    url : this.props.host + ":" +  this.props.port,
     id: this.props.idadministrador,
     nombre : this.props.nombre,
     apellido: this.props.apellido,
