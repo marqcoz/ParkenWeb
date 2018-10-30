@@ -16,10 +16,16 @@ class App extends Component {
       host:"3.16.52.71",
       //host:"localhost",
       port:"3001",
-      show: false
+      show: false,
+      idadministrador:"",
+      nombre: "",
+      apellido: "",
+      email: "",
+      password: ""
     };
 
     this.userHasAuthenticated = this.userHasAuthenticated.bind(this);
+    this.setInfoAdministrador = this.setInfoAdministrador.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleShow = this.handleShow.bind(this);
@@ -36,6 +42,15 @@ class App extends Component {
     this.setState({ isAuthenticated: authenticated});
     var newAuth = ('true' === authenticated );
     localStorage.setItem("isLogged", newAuth);
+  }
+
+  setInfoAdministrador = (id, nombre, apellido, email, password) => {
+    this.setState({ idadministrador: id,
+      nombre: nombre,
+      apellido: apellido,
+      email: email,
+      password: password
+    });
   }
 
   handleLogout = event => {
@@ -60,7 +75,14 @@ class App extends Component {
       isAuthenticated: this.state.isAuthenticated,
       userHasAuthenticated: this.userHasAuthenticated,
       host: this.state.host,
-      port: this.state.port
+      port: this.state.port,
+      idadministrador: this.state.idadministrador,
+      nombre: this.state.nombre,
+      apellido: this.state.apellido,
+      email: this.state.email,
+      password: this.state.password,
+      setInfoAdministrador: this.setInfoAdministrador
+      
     };
 
     return (

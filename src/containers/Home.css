@@ -8,6 +8,17 @@
     
   }
   
+  .Home .tituloHome{
+    font-size: 20px;
+    text-align: center;
+  }
+  
+  .Home .subtituloHome{
+    font-size: 40px;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
   .Home .lander h1 {
     font-family: "Open Sans", sans-serif;
     font-weight: 600;
