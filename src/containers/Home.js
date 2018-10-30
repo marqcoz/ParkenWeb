@@ -22,12 +22,12 @@ export default class Home extends Component {
   //this.verificarAdmin = this.verificarAdmin.bind(this);
 }
 
-  componentDidMount(){
+  async componentDidMount(){
     if(localStorage.getItem("isLogged") === "false"){
         this.props.history.push("/");
     }else{
       console.log(this.state.isInBD);
-      this.verificarAdmin();
+      await this.verificarAdmin();
       console.log("Verificar");
       console.log(this.state.isInBD);
       if(!this.state.isInBD){
@@ -36,9 +36,9 @@ export default class Home extends Component {
     }
   }
 
-  async verificarAdmin(){
+  verificarAdmin(){
     var url = 'http://'+this.state.url+'/administrador/verificarAdministrador?administrador='+localStorage.getItem("idadministrador").toString();
-    await axios.get(url)
+    axios.get(url)
       .then(res => {
         if(res.data.success === 1){
           this.setState({isLoading : false})
