@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import {Button, Image} from "react-bootstrap";
 import "./Home.css";
+import axios from "axios";
 
 export default class Home extends Component {
 
@@ -16,12 +17,38 @@ export default class Home extends Component {
   };
 
   this.irAEditar = this.irAEditar.bind(this);
+  this.verificarAdmin = this.verificarAdmin.bind(this);
 }
 
   componentDidMount(){
     if(localStorage.getItem("isLogged") === "false"){
-      this.props.history.push("/login");
+        this.props.history.push("/");
+    }else{
+      if(this.verificarAdmin() === 0){
+        this.props.handleLogout();
+      }
     }
+  }
+
+  async verificarAdmin(){
+    var url = 'http://'+this.state.url+'/administrador/verificarAdministrador?administrador='+localStorage.getItem("idadministrador").toString();
+    await axios.get(url)
+      .then(res => {
+        if(res.data.success === 1){
+          this.setState({isLoading : false})
+          this.setState({isConnected : true})
+          return 1;
+        }else{
+          this.setState({isLoading : false})
+          this.setState({isConnected : false})
+          return 0;
+        }
+    }).catch(error => {
+        alert(error.message);
+        this.setState({isLoading : false})
+        this.setState({isConnected : false})
+        return 2;
+    });
   }
 
   irAEditar(){
