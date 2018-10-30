@@ -12,9 +12,10 @@ export default class Home extends Component {
     nombre : this.props.nombre,
     apellido: this.props.apellido,
     email: this.props.email,
-    password: this.props.password
-    
+    password: this.props.password 
   };
+
+  this.irAEditar = this.irAEditar.bind(this);
 }
 
   componentDidMount(){
