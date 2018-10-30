@@ -93,7 +93,7 @@ class App extends Component {
       email: this.state.email,
       password: this.state.password,
       setInfoAdministrador: this.setInfoAdministrador,
-      editProfile = this.editProfile,
+      editProfile : this.editProfile,
       isEditProfile : this.isEditProfile
     };
 
