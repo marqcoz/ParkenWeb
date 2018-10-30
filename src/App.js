@@ -95,7 +95,7 @@ class App extends Component {
       password: this.state.password,
       setInfoAdministrador: this.setInfoAdministrador,
       editProfile : this.editProfile,
-      isEditProfile : this.isEditProfile
+      isEditProfile : this.state.isEditProfile
     };
 
     return (
