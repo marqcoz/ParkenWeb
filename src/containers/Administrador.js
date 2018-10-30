@@ -240,7 +240,7 @@ handleSubmit = async event => {
                 console.log("ALERTE");
                 console.log(response.data.id);
                 console.log(localStorage.getItem("idadministrador"));
-                if(response.data.id === localStorage.getItem("idadministrador")){
+                if(response.data.id.toString() === localStorage.getItem("idadministrador").toString()){
                   localStorage.getItem("Entro");
                   this.props.setInfoAdministrador(response.data.id, response.data.nombre, response.data.apellido, response.data.email, response.data.password);
                 }
