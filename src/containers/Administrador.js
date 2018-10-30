@@ -237,6 +237,9 @@ handleSubmit = async event => {
                 self.setState({isEditing: false});
                 self.setState({isAddingAdmins:false});
                 self.setNoAddingAdmins();
+                if(response.data.id === localStorage.getItem("idadministrador")){
+                  this.props.setInfoAdministrador(response.data.id, response.data.nombre, response.data.apellido, response.data.email, response.data.password);
+                }
             }
             else if(response.data.success === 2){
               alert("Error al modificar el perfil del administrador.");
