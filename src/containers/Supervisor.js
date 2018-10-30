@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import {PageHeader, FormGroup, FormControl, ControlLabel, ListGroup, ListGroupItem } from "react-bootstrap";
-import { LinkContainer } from "react-router-bootstrap";
+import {Modal, Button, PageHeader, FormGroup, FormControl, ControlLabel, ListGroup, ListGroupItem } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import PhoneInput from 'react-phone-number-input';
 import { isValidPhoneNumber } from 'react-phone-number-input';
@@ -32,7 +31,8 @@ export default class Supervisor extends Component {
     direccion: "",
     estatus: "INACTIVO",
     zona: "",
-    zonasparken: []
+    zonasparken: [],
+    show: false
   };
 
   this.deleteSuper = this.deleteSuper.bind(this);
@@ -42,6 +42,8 @@ export default class Supervisor extends Component {
   this.handleChangeCel = this.handleChangeCel.bind(this);
   this.gettingZonasParken = this.gettingZonasParken.bind(this);
   this.infoSuper = this.infoSuper.bind(this);
+  this.gettingSupervisoresXZona = this.infoSuper.bind(this);
+  this.showAlert = this.showAlert.bind(this);
 
 }
 
@@ -113,6 +115,7 @@ setEdit(supervisor){
 deleteSuper(id){
   alert("Se eliminará al administrador " + id);
   //Confirmacion con un popup o alerta
+  var self = this;
   var payload = { data: {
     "idsupervisor": id
   }}
@@ -121,7 +124,11 @@ deleteSuper(id){
     const supervisor = res.data;
     console.log(supervisor);
     if(supervisor.success === 1){
-      alert("Se eliminó el administrador.");
+      //alert("Se eliminó el administrador.");
+      self.showAlert("Supervisor eliminado",
+         "Se eliminó al administrador correctamente.",
+         true, "info", "OK",
+         false, "", "");
       this.gettingSupervisoresXZona();
       this.setState({isAddingSupers:false, isConnected: true});
     }else if(supervisor.success === 2){
@@ -159,6 +166,8 @@ setAddingSupers = event => {
     celular: "",
     direccion: "",
     estatus: "",
+
+    
 });     
 
     this.gettingZonasParken();
@@ -317,6 +326,24 @@ handleSubmit = async event => {
   }
 }
 
+showAlert(title, body, btn1, style1, tBtn1, btn2, style2, tBtn2, data){
+  this.setState({
+    show: true,
+    titleAlert: title,
+    bodyAlert: body,
+    button1: btn1,
+    styleAlert1: style1,
+    titleButtonAlert1: tBtn1,
+    button2: btn2,
+    styleAlert2: style2,
+    titleButtonAlert2: tBtn2,
+  });
+  if(title == "Eliminar administrador"){
+    this.setState({idadministrador: data});
+  }
+
+}
+
 infoSuper(supervisor){
     this.setState({title: "Supervisor " + supervisor.nombre + " "+ supervisor.apellido});
     this.setState({nombre: supervisor.nombre}); 
@@ -438,6 +465,7 @@ renderSupersList(supers) {
         <ListGroupItem 
         header={supervisor.nombre.trim() + ' ' + supervisor.apellido}>
             <div>{supervisor.email}</div>
+            <div>{supervisor.nombrezonaparken}</div>
              <div className='btn-group ml-auto'>
              <button className='delete btn btn-info' 
               onClick={this.infoSuper.bind(this, supervisor)}>
@@ -490,6 +518,25 @@ render() {
     {this.props.isAuthenticated ? 
     (this.state.isAddingSupers ? this.renderAddSupervisor() : (this.state.isConnected ? this.renderSupers():this.renderLander())):
     this.props.history.push("/login")}
+
+    <Modal show={this.state.show} onHide={this.handleClose}>
+    <Modal.Header closeButton>
+      <Modal.Title>{this.state.titleAlert}</Modal.Title>
+    </Modal.Header>
+    <Modal.Body>
+    {this.state.bodyAlert}
+    </Modal.Body>
+    <Modal.Footer>
+      {this.state.button1 ? 
+            <Button bsStyle={this.state.styleAlert1} onClick={this.handleAction1}>{this.state.titleButtonAlert1}</Button>:
+            <div></div>
+          }
+      {this.state.button2 ? 
+      <Button bsStyle={this.state.styleAlert2} onClick={this.handleAction2}>{this.state.titleButtonAlert2}</Button>:
+            <div></div>
+          }
+    </Modal.Footer>
+  </Modal>
     </div>
   );
 }

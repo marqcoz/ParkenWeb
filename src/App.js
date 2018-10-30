@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
 import { Link, withRouter } from "react-router-dom";
-import {Modal, OverlayTrigger, Tooltip, Button, Popover, Nav, Navbar, NavItem } from "react-bootstrap";
+import {Modal, Button, Nav, Navbar, NavItem } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import Routes from "./Routes";
 import "./App.css";
@@ -62,13 +62,6 @@ class App extends Component {
       host: this.state.host,
       port: this.state.port
     };
-
-    const popover = (
-      <Popover id="modal-popover" title="popover">
-        very popover. such engagement
-      </Popover>
-    );
-    const tooltip = <Tooltip id="modal-tooltip">wow.</Tooltip>;
 
     return (
       !this.state.isAuthenticating &&
