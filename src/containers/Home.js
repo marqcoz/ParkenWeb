@@ -38,7 +38,7 @@ export default class Home extends Component {
       </div>
       
         <div className="subtituloHome">
-        <Button bsStyle="success">Editar</Button>
+        <Button bsStyle="success" onClick={this.props.editProfile}>Editar</Button>
         </div>
       </form>
     </div>

@@ -39,7 +39,19 @@ export default class Administrador extends Component {
 }
 
 componentDidMount() {
-  this.gettingAdministradores();
+  if(this.props.isEditProfile){
+    this.setState({isEditing: true});
+    this.setState({title: "Editar administrador"});
+    this.setState({nombre: localStorage.getItem("nombreadministrador")}); 
+    this.setState({apellido: localStorage.getItem("apellidoadministrador")}); 
+    this.setState({email: localStorage.getItem("emailadministrador") }); 
+    this.setState({password: localStorage.getItem("passwordadministrador")}); 
+    this.setState({repassword: localStorage.getItem("passwordadministrador")}); 
+    this.setState({idadministrador: localStorage.getItem("idadministrador")}); 
+   this.setState({isAddingAdmins: true});
+  }else{
+    this.gettingAdministradores();
+  }
 }
 
 async gettingAdministradores(){
