@@ -25,7 +25,10 @@ export default class Home extends Component {
     if(localStorage.getItem("isLogged") === "false"){
         this.props.history.push("/");
     }else{
-      if(this.verificarAdmin() === 0){
+      var r = this.verificarAdmin();
+      console.log("Verificar");
+      console.log(r);
+      if( r === 0){
         this.props.handleLogout();
       }
     }
