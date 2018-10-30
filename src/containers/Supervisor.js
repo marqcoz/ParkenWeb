@@ -122,6 +122,8 @@ deleteSuper(id){
     console.log(supervisor);
     if(supervisor.success === 1){
       alert("Se eliminó el administrador.");
+      this.gettingSupervisoresXZona();
+      this.setState({isAddingSupers:false, isConnected: true});
     }else if(supervisor.success === 2){
         if(supervisor.error == '0'){
             alert("No se puede eliminar al supervisor, debe existir al menos un supervisor en la zona Parken.");    
@@ -259,7 +261,8 @@ handleSubmit = async event => {
                 alert("Se modificó el perfil del supervisor exitosamente.");
                 self.setState({isEditing: false});
                 self.setState({isAddingSupers:false});
-                self.props.history.push("/supervisores");
+                this.gettingSupervisoresXZona();
+                this.setState({isAddingSupers:false, isConnected: true});
             }
             else if(response.data.success === 2){
               alert("Error al modificar el perfil del supervisor.");
