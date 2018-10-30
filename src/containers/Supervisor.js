@@ -127,7 +127,7 @@ setEdit(supervisor){
 
 
 deleteSuper(id){
-  alert("Se eliminará al administrador " + id);
+  //alert("Se eliminará al administrador " + id);
   //Confirmacion con un popup o alerta
   var self = this;
   var payload = { data: {
@@ -358,7 +358,7 @@ handleSubmit = async event => {
           if(response.data.success === 1){
               //alert("Supervisor agregado exitosamente.");
               self.showAlert("Supervisor agregado",
-                "Se agregó exitosamente el supervisor a la zona Parken.",
+                "Se agregó el supervisor a la zona Parken exitosamente.",
                 true, "info", "OK",
                 false, "", "");
               self.setNoAddingAdmins();
