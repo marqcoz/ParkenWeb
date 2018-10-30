@@ -198,10 +198,8 @@ setAddingSupers = event => {
     celular: "",
     direccion: "",
     estatus: "",
-
-    
 });     
-
+this.props.history.push("/supervisores");
     this.gettingZonasParken();
   this.setState({title: "Agregar supervisor", isAddingSupers: true});
 }
