@@ -18,7 +18,7 @@ export default class Home extends Component {
   };
 
   this.irAEditar = this.irAEditar.bind(this);
-  this.verificarAdmin = this.verificarAdmin.bind(this);
+  //this.verificarAdmin = this.verificarAdmin.bind(this);
 }
 
   componentDidMount(){
