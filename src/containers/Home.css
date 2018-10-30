@@ -9,14 +9,15 @@
   }
   
   .Home .tituloHome{
-    font-size: 20px;
+    font-size: 40px;
+    font-style: oblique;
     text-align: center;
     align-content: center;
     align-items: center;
   }
   
   .Home .subtituloHome{
-    font-size: 40px;
+    font-size: 20px;
     text-align: center;
     margin-bottom: 30px;
   }
