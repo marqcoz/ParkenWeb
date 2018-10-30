@@ -91,7 +91,6 @@ export default class Login extends Component {
 
   render() {
     return (
-      
       <div className="Login">
         <form onSubmit={this.handleSubmit}>
         <div className="tituloLogin">Bienvenido administrador</div>

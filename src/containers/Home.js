@@ -27,7 +27,7 @@ export default class Home extends Component {
       <div className="Home">
       <form onSubmit={this.handleSubmit}>
       <div className="tituloHome">Bienvenido {localStorage.getItem("nombreadministrador")}</div>
-      <Image src={require("./ic_user-web.png")}/>
+      <img alt="Logo administrador" src={require("./ic_user-web.png")} style={{width:80}}/>
       <div className="subtituloHome">Perfil</div>
       <div className="subtituloHome">{localStorage.getItem("nombreadministrador")}</div>
       <div className="subtituloHome">{localStorage.getItem("apellidodministrador")}</div>
