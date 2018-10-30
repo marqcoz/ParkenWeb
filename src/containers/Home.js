@@ -26,7 +26,7 @@ export default class Home extends Component {
     return (
       <div className="Home">
       <form onSubmit={this.handleSubmit}>
-      <div className="tituloHome">Bienvenido + {localStorage.getItem("nombreadministrador")}</div>
+      <div className="tituloHome">Bienvenido {localStorage.getItem("nombreadministrador")}</div>
       <Image src={require("./ic_user-web.png")}/>
       <div className="subtituloHome">Perfil</div>
       <div className="subtituloHome">{localStorage.getItem("nombreadministrador")}</div>

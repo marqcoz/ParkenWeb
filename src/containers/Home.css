@@ -40,3 +40,17 @@
   .Home .notes p {
     color: #666;
   }
+
+  @media all and (min-width: 480px) {
+    .Home {
+      padding: 60px 0;
+    }
+  
+    .Home form {
+      margin: 0px auto;
+      padding: 40px;
+      max-width: 420px;
+      border-radius: 15px;
+      background-color:white;
+    }
+  }
