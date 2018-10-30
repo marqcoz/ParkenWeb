@@ -49,6 +49,8 @@ componentDidMount() {
     this.setState({repassword: localStorage.getItem("passwordadministrador")}); 
     this.setState({idadministrador: localStorage.getItem("idadministrador")}); 
    this.setState({isAddingAdmins: true});
+   this.setState({isLoading : false})
+   this.setState({isConnected : true})
   }else{
     this.gettingAdministradores();
   }
