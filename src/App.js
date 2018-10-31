@@ -45,9 +45,9 @@ class App extends Component {
 
   
   userHasAuthenticated = authenticated => {
-    this.setState({ isAuthenticated: authenticated});
     var newAuth = ('true' === authenticated );
-    localStorage.setItem("isLogged", newAuth);
+    this.setState({ isAuthenticated: newAuth});
+    localStorage.setItem("isLogged", authenticated);
   }
 
   editProfileOff(){
