@@ -22,9 +22,7 @@ export default class Login extends Component {
   }
 
   componentDidMount(){
-    if(localStorage.getItem("isLogged")){
-      this.props.history.push("/");
-    }
+    
   }
 
   validateForm() {
@@ -92,6 +90,7 @@ export default class Login extends Component {
   render() {
     return (
       <div className="Login">
+      {!this.props.isAuthenticated ?
         <form onSubmit={this.handleSubmit}>
         <div className="tituloLogin">Bienvenido administrador</div>
         <div className="subtituloLogin">Inicia sesión</div>
@@ -129,7 +128,9 @@ export default class Login extends Component {
           <div className="subtituloLogin">
           <Button bsStyle="link">Recuperar contraseña</Button>
           </div>
-        </form>
+        </form> :
+        this.props.history.push("/")
+        }
       </div>
     );
   }

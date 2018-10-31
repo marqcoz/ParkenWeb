@@ -23,11 +23,7 @@ export default class Home extends Component {
 }
 
 componentDidMount(){
-    if(localStorage.getItem("isLogged") != null){
       this.verificarAdmin();
-    }else{
-      
-    }
   }
 
   verificarAdmin(){
