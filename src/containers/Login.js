@@ -59,7 +59,7 @@ export default class Login extends Component {
         if(response.data.success === 1){
         console.log("Login successfull");
         self.setState({isAlert:true, styleAlert:"success", titleAlert: "Bienvenido", textAlert:""});
-        self.props.userHasAuthenticated('true');
+        self.props.userHasAuthenticated(true);
         self.props.setInfoAdministrador(response.data.id, response.data.Nombre, response.data.Apellido, response.data.Email, response.data.Contrasena);
         self.props.history.push("/");
         }
