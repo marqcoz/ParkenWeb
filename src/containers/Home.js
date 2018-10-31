@@ -59,6 +59,7 @@ componentDidMount(){
   render() {
     return (
       <div className="Home">
+      {this.props.isAuthenticated ? 
       <form onSubmit={this.handleSubmit}>
       <div className="tituloHome">Perfil
       <div>
@@ -74,7 +75,8 @@ componentDidMount(){
         <div className="subtituloHome">
         <Button bsStyle="success" onClick={this.irAEditar}>Editar</Button>
         </div>
-      </form>
+      </form> :
+      this.props.history.push("/login")}
     </div>
     );
   }
