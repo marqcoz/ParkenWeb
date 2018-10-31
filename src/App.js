@@ -45,7 +45,9 @@ class App extends Component {
 
   
   userHasAuthenticated = authenticated => {
+    console.log(authenticated);
     var newAuth = ('true' === authenticated );
+    console.log(newAuth);
     this.setState({ isAuthenticated: newAuth});
     localStorage.setItem("isLogged", authenticated);
   }
