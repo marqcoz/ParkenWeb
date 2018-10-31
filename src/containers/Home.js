@@ -22,17 +22,9 @@ export default class Home extends Component {
   //this.verificarAdmin = this.verificarAdmin.bind(this);
 }
 
-  async componentDidMount(){
+componentDidMount(){
     if(localStorage.getItem("isLogged") === "false"){
         this.props.history.push("/");
-    }else{
-      console.log(this.state.isInBD);
-      await this.verificarAdmin();
-      console.log("Verificar");
-      console.log(this.state.isInBD);
-      if(!this.state.isInBD){
-        this.props.handleLogout();
-      }
     }
   }
 
@@ -48,6 +40,8 @@ export default class Home extends Component {
           this.setState({isLoading : false})
           this.setState({isConnected : false})
           this.setState({isInBD: false});
+          this.props.handleLogout();
+      
         }
     }).catch(error => {
         alert(error.message);
