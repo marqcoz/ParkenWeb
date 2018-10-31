@@ -36,9 +36,11 @@ class App extends Component {
 
   componentDidMount(){
     var newAuth = ('true' === localStorage.getItem("isLogged") );
+    console.log(newAuth);
     //var newAuth = localStorage.getItem("isLogged");
     this.setState({isAuthenticated: newAuth});
     this.setState({isAuthenticating:false})
+    console.log(this.state.isAuthenticated);
   }
 
   
