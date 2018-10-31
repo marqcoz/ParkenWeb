@@ -75,7 +75,7 @@ class App extends Component {
   }
 
   handleLogout() {
-    this.userHasAuthenticated(false);
+    this.userHasAuthenticated('false');
     //localStorage.setItem("isLogged", false);
     this.props.history.push("/login");
     this.setState({show:false});
