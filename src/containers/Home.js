@@ -23,7 +23,10 @@ export default class Home extends Component {
 }
 
 componentDidMount(){
-      this.verificarAdmin();
+  if(this.props.isAuthenticated){
+    this.verificarAdmin();
+  }
+    
   }
 
   verificarAdmin(){
