@@ -45,6 +45,7 @@ class App extends Component {
 
   
   userHasAuthenticated = authenticated => {
+    console.log("userHas");
     console.log(authenticated);
     var newAuth = ('true' === authenticated );
     console.log(newAuth);
