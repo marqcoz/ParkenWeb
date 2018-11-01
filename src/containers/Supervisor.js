@@ -33,30 +33,38 @@ export default class Supervisor extends Component {
     estatus: "INACTIVO",
     zona: "",
     zonasparken: [],
-    show: false
+    show: false,
+    showLoading: false 
   };
 
   this.deleteSuper = this.deleteSuper.bind(this);
   this.setEdit = this.setEdit.bind(this);
   this.setAddingSupers = this.setAddingSupers.bind(this);
-  this.stablishZP = this.stablishZP.bind(this);
   this.handleChangeCel = this.handleChangeCel.bind(this);
   this.gettingZonasParken = this.gettingZonasParken.bind(this);
   this.infoSuper = this.infoSuper.bind(this);
   this.gettingSupervisoresXZona = this.gettingSupervisoresXZona.bind(this);
   this.showAlert = this.showAlert.bind(this);
   this.handleClose = this.handleClose.bind(this);
+  this.handleCloseLoading = this.handleCloseLoading.bind(this);
   this.handleAction1 = this.handleClose.bind(this);
   this.handleAction2 = this.handleAction2.bind(this);
 
 }
 
 componentDidMount() {
+  if(this.props.isAuthenticated){
+    this.verificarAdmin();
+  }
  this.gettingSupervisoresXZona();
 }
 
 handleClose(){
   this.setState({show: false})
+}
+
+handleCloseLoading(){
+  this.setState({showLoading: false})
 }
 
 handleAction2(){
@@ -68,25 +76,31 @@ handleAction2(){
 
 async gettingSupervisoresXZona(){
   var idzona = "0";
+  var self = this;
   var url = 'http://'+this.state.url+'/administrador/obtenerSupervisoresXZona?idzona=' + idzona;
-await axios.get(url)
-.then(res => {
- const supers = res.data.supervisores;
- console.log(supers);
- if(supers.success === 2){
-  this.setState({isLoading : false})
-  this.setState({isConnected : false})
+  this.setState({showLoading: true});
+  await axios.get(url)
+    .then(res => {
+      self.setState({showLoading: false});
+      const supers = res.data.supervisores;
+      console.log(supers);
+      if(supers.success === 2){
+        this.setState({isLoading : false})
+        this.setState({isConnected : false})
 
- }else{
-  this.setState({supers});
-  this.setState({isLoading : false})
-  this.setState({isConnected : true})
- }
- 
+      }else{
+        this.setState({supers});
+        this.setState({isLoading : false})
+        this.setState({isConnected : true})
+      }
+      
+      
 }).catch(error => {
+  self.setState({showLoading: false});
 alert(error.message);
 this.setState({isLoading : false})
 this.setState({isConnected : false})
+
 });
 }
 
@@ -134,8 +148,10 @@ deleteSuper(id){
   var payload = { data: {
     "idsupervisor": id
   }}
+  this.setState({showLoading: true});
   axios.delete('http://'+this.state.url+'/administrador/eliminarSupervisor', payload)
   .then(res => {
+    self.setState({showLoading: false});
     const supervisor = res.data;
     console.log(supervisor);
     if(supervisor.success === 1){
@@ -180,7 +196,9 @@ deleteSuper(id){
     //this.setState({ persons });
     self.setState({isLoading : false})
     self.setState({isConnected : true})
+
   }).catch(error => {
+    self.setState({showLoading: false});
    alert(error.message);
    this.setState({isLoading : false})
    this.setState({isConnected : false})
@@ -209,9 +227,12 @@ setNoAddingAdmins = event => {
 }
 
 async gettingZonasParken(){
+  var self = this;
+  this.setState({showLoading: true});
 var url = 'http://'+this.state.url+'/administrador/obtenerZonasParkenID';
  await axios.get(url)
  .then(res => {
+  self.setState({showLoading: false});
    const zonasparken = res.data;
    console.log(zonasparken);
    if(zonasparken.success === 2){
@@ -225,6 +246,7 @@ var url = 'http://'+this.state.url+'/administrador/obtenerZonasParkenID';
    }
    
  }).catch(error => {
+  self.setState({showLoading: false});
   alert(error.message);
   this.setState({isLoading : false})
   this.setState({isConnected : false})
@@ -306,9 +328,10 @@ handleSubmit = async event => {
 
       if(this.state.isEditing){
         //Se editará el supervisor
+        this.setState({showLoading: true});
         await axios.post('http://'+this.state.url+'/administrador/editarSupervisor', payload)
         .then(function (response) {
-          
+          self.setState({showLoading: false});
             if(response.data.success === 1){
                 //alert("Se modificó el perfil del supervisor exitosamente.");
                 self.showAlert("Supervisor modificado",
@@ -343,16 +366,18 @@ handleSubmit = async event => {
         }
         })
         .catch(function (error) {
+          self.setState({showLoading: false});
             alert(error.message);
         });
         this.setState({ isLoading: false });
         this.setState({isConnected: true});
 
       }else{
-
+        this.setState({showLoading: true});
         await axios.post('http://'+this.state.url+'/administrador/agregarSupervisor', payload)
         .then(function (response) {
         console.log(response);
+        self.setState({showLoading: false});
           if(response.data.success === 1){
               //alert("Supervisor agregado exitosamente.");
               self.showAlert("Supervisor agregado",
@@ -389,6 +414,7 @@ handleSubmit = async event => {
 
       })
       .catch(function (error) {
+        self.setState({showLoading: false});
           alert(error.message);
       });
       this.setState({ isLoading: false });
@@ -434,18 +460,35 @@ infoSuper(supervisor){
     this.setState({isShowingInfo: true});
   }
 
+  async verificarAdmin(){
+    var self = this;
+    this.setState({showLoading: true});
+    var url = 'http://'+this.state.url+'/administrador/verificarAdministrador?administrador='+localStorage.getItem("idadministrador").toString();
+    await axios.get(url)
+      .then(res => {
+        self.setState({showLoading: false});
+        if(res.data.success === 1){
+          this.setState({isLoading : false})
+          this.setState({isConnected : true})
+        }else{
+          this.setState({isLoading : false})
+          this.setState({isConnected : false})
+          this.props.handleLogout();
+      
+        }
+    }).catch(error => {
+      self.setState({showLoading: false});
+        alert(error.message);
+        this.setState({isLoading : false})
+        this.setState({isConnected : false})
+    });
+  }  
 
-stablishZP(){
-    alert("mierda");
-    //console.log(idzona);
-    //this.setState({zona: idzona });
-}
 
 renderAddSupervisor() {
-  return (
-      
+  return (    
     <div className="Supervisor" >
-    <PageHeader className="tit">{this.state.title}</PageHeader>
+    <PageHeader ><button className='but' onClick={this.setNoAddingAdmins}>{"←"}</button>{this.state.title}</PageHeader>    
       <form className="Formulario" onSubmit={this.handleSubmit}>
         <FormGroup  controlId="nombre" bsSize="small">
           <ControlLabel>Nombre</ControlLabel>
@@ -533,7 +576,9 @@ renderAddSupervisor() {
 }
 
 renderSupersList(supers) {
-  return(<div className="list"> {[{}].concat(supers).map(
+  return(
+  <div className="list">   
+  {[{}].concat(supers).map(
     (supervisor, i) =>
       i !== 0
         ? 
@@ -584,9 +629,8 @@ renderLander() {
 
 renderSupers() {
   return (
-    <div className="Supervisor">
-      <PageHeader className="tit">Supervisores</PageHeader>
-      <ListGroup>
+    <div className="Supervisor">    
+      <ListGroup>                  
         {!this.state.isLoading && this.renderSupersList(this.state.supers)}
       </ListGroup>
     </div>
@@ -617,6 +661,18 @@ render() {
             <div></div>
           }
     </Modal.Footer>
+  </Modal>
+
+  <Modal show={this.state.showLoading} backdrop="static" keyboard={false}>
+    <Modal.Body>
+      <Modal.Title>
+      <LoaderButton className='btn btn-link'
+            block
+            bsSize="large"
+            isLoading={true}
+            loadingText="Cargando..."/>
+        </Modal.Title>
+    </Modal.Body>
   </Modal>
     </div>
   );

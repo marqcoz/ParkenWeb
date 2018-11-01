@@ -1,5 +1,22 @@
 .Zonas form {
     padding-bottom: 0px;
+
+  }
+
+  .Zonas {
+    height: 30%;
+  }
+
+  .Zonas .f{
+    text-align: left;
+    margin-top: 50px;
+    margin-left: 10px;
+  }
+  .form-inline > * {
+    margin:10px 15px;
+ }
+  .Zonas .btn{
+    margin-top: 10px;
   }
 
   .NoSe form {
@@ -11,9 +28,55 @@
     font-size: 24px;
   }
 
+  .Zonas .list{
+    align-content: center;
+    padding-left: 20%;
+    padding-right: 20%;
+  }
+
+  .Zonas .load{
+    padding-top: 20%;
+    text-align: center;
+    vertical-align: middle;
+  }
+  
+
+  .Zonas .but{
+    font-family: "Open Sans", sans-serif;
+    padding-top: 0px;
+    margin-top: 0px; 
+    padding-bottom: 0px;
+    margin-bottom: 0px; 
+    font-size: 50px;
+    text-align: left;
+    background: transparent;
+    color: red;
+    height: bold;
+    padding-left:50px; 
+    padding-right:150px; 
+    border-color: transparent;
+  }
+
+  .Zonas .Formulario{
+    text-align: center;
+    align-items: center;
+    align-content: center;
+    margin-left: 5%;
+    margin-right: 5%;
+    padding-left: 2%;
+    padding-right: 2%;
+    padding-top: 2%;
+    padding-bottom: 2%;
+    border-radius: 10px;
+    margin-bottom: 2%;
+    background-color:white; 
+  }
+
   .Mapi{
     justify-content:center;
-    right: 200px;
+background: black;
+    height: 30%;
+
   }
 
 
@@ -24,9 +87,9 @@
     }
   
     .Zonas form {
-      margin-top: 10px;
-      max-width: 320px;
-      max-height: 1200px;
+      margin-top: 0;
+      max-width: auto;
+      max-height: auto;
     }
 
     .NoSe form { 

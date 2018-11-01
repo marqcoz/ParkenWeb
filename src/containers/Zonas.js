@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import {GoogleApiWrapper, Map, Polygon, Marker} from 'google-maps-react';
-import {PageHeader,InputGroup, FormGroup, FormControl, ControlLabel, ListGroup, ListGroupItem } from "react-bootstrap";
+import {Col, Form, Modal, Button, PageHeader,InputGroup, FormGroup, FormControl, ControlLabel, ListGroup, ListGroupItem } from "react-bootstrap";
 import axios from 'axios';
 import LoaderButton from "../components/LoaderButton";
 import "./Zonas.css";
+import { relative, isAbsolute } from 'upath';
+
 
 export class Zonas extends Component {
   constructor(props) {
@@ -20,6 +22,7 @@ this.state = {
   isAddingZona: false,
   isAddingEspaciosParken: false,
   loading: true,
+  showLoading: false,
 
   title:"",
   titleButton:"",
@@ -68,9 +71,6 @@ this.state = {
   isConnected: false,
   thereAdmins: true,
   isEditing: false,
-
-  notes: [],
-  persons: [],
   zonas: []
 };
 
@@ -83,15 +83,18 @@ this.handleChangeNumber = this.handleChangeNumber.bind(this);
 this.validateInfoZone = this.validateInfoZone.bind(this);
 this.onMarkerClicked= this.onMarkerClicked.bind(this);
 this.clearMapOfMarkers = this.clearMapOfMarkers.bind(this);
+this.validateInputMap = this.validateInputMap.bind(this);
+this.setNoAddingZona = this.setNoAddingZona.bind(this);
 
 }
 
 async gettingLocation(){
-
+  this.setState({showLoading: true});
+  var self = this;
   await navigator.geolocation.getCurrentPosition(
     position => {
       const { latitude, longitude } = position.coords;
-
+      this.setState({showLoading: false});
       this.setState({
         userLocation: { lat: latitude, lng: longitude },
         loading: false,
@@ -99,33 +102,107 @@ async gettingLocation(){
       });
     },
     () => {
+      this.setState({showLoading: false});
       this.setState({ 
         loading: false, isAddingZona: true });
     }
+    
   );
 }
 
 componentDidMount() {
 
-axios.get('http://'+this.state.url+'/administrador/obtenerZonasParken')
-.then(res => {
- const zonas = res.data.ZonasParken;
- console.log(zonas);
- if(zonas.success === 2){
+  if(this.props.isAuthenticated){
+    this.verificarAdmin();
+  }
+
+  this.obtenerZonasParker();
+
+}
+
+async verificarAdmin(){
+  var self = this;
+  this.setState({showLoading: true});
+  var url = 'http://'+this.state.url+'/administrador/verificarAdministrador?administrador='+localStorage.getItem("idadministrador").toString();
+  await axios.get(url)
+    .then(res => {
+      self.setState({showLoading: false});
+      if(res.data.success === 1){
+        this.setState({isLoading : false})
+        this.setState({isConnected : true})
+      }else{
+        this.setState({isLoading : false})
+        this.setState({isConnected : false})
+        this.props.handleLogout();
+    
+      }
+  }).catch(error => {
+    self.setState({showLoading: false});
+      alert(error.message);
+      this.setState({isLoading : false})
+      this.setState({isConnected : false})
+  });
+}
+
+async obtenerZonasParker(){
+  var self = this;
+  this.setState({showLoading: true});
+  await axios.get('http://'+this.state.url+'/administrador/obtenerZonasParken')
+  .then(res => {
+    self.setState({showLoading: false});
+   const zonas = res.data.ZonasParken;
+   console.log(zonas);
+   if(zonas.success === 2){
+    this.setState({isLoading : false})
+    this.setState({isConnected : false})
+  
+   }else{
+    this.setState({ zonas });
+    this.setState({isLoading : false})
+    this.setState({isConnected : true})
+   }
+   
+  }).catch(error => {
+    self.setState({showLoading: false});
+  alert(error.message);
   this.setState({isLoading : false})
   this.setState({isConnected : false})
+  });
+}
 
- }else{
-  this.setState({ zonas });
-  this.setState({isLoading : false})
-  this.setState({isConnected : true})
- }
- 
-}).catch(error => {
-alert(error.message);
-this.setState({isLoading : false})
-this.setState({isConnected : false})
-});
+setNoAddingZona(){
+  this.setState({
+    isShowingInfo: false,
+    isAddingZona: false,
+    isAddingEspaciosParken: false,
+    idzonaparken: "",
+  nombre : "",
+  estatus: "NO DISPONIBLE",
+  precio: "",
+  isShowingInfo: false,
+  isAddingZona: false,
+  isAddingEspaciosParken: false,
+  showLoading: false,
+  title:"",
+  titleButton:"",
+  userLocation: { lat: 19.432551, lng: -99.133022 },
+  location:[{ lat: 19.432551, lng: -99.133022 },{
+    lat: 40.854885,
+    lng: -88.081807
+  } ],
+  markers: [], 
+  polygon : [], 
+  polygonWorld:[
+  {lat:85,lng:180},{lat:85,lng:90},{lat:85,lng:0},{lat:85,lng:-90},{lat:85,lng:-180},{lat:0,lng:-180},{lat:-85,lng:-180},
+  {lat:-85,lng:-90},{lat:-85,lng:0},{lat:-85,lng:90},{lat:-85,lng:180},{lat:0,lng:180},{lat:85,lng:180}],
+  polygonOne: [],
+  polygonTwo: [],
+  colorStrike:"#F44336",
+  colorFill: "#F44336",
+  isPolygonClickable: false,
+  thereAdmins: true,
+  isEditing: false,
+  });
 }
 
 infoZona(zona){
@@ -151,7 +228,7 @@ infoZona(zona){
 
 addNewZone(){
  // alert("Se agregara una nueva zona Parken");
-  this.setState({ title: "Agregar zona Parken", titleButton:"Agregar espacio Parken", isAddingEspaciosParken: false,
+  this.setState({ title: "Agregar zona Parken", labelOverMap: "Dibuja en el mapa el perímetro de la nueva zona Parken ↴", titleButton:"\uFF0B Agregar espacios Parken", isAddingEspaciosParken: false,
 polygonOne: this.state.polygon, polygonTwo:[] });
   this.gettingLocation();
 
@@ -166,6 +243,12 @@ validateForm() {
   return this.state.nombre.length > 0 && 
   this.state.precio.length > 0 
   && this.state.estatus.length > 0; 
+
+}
+
+validateInputMap() {
+  //Validaremos si ya ingresaron poligonos
+  return this.state.markers.length > 0;
 
 }
 
@@ -217,10 +300,14 @@ handleChangeNumber(event) {
 
 clearMapOfMarkers = event => {
   alert("Se presiono");
-  this.setState({markers:[],
-    polygon:[] 
+  this.setState({markers:[], polygon:[],
+    polygonOne: [], polygonTwo: [], 
+    colorStrike:"#F44336",
+    colorFill: "#F44336"
   });
+  this.setState({ title: "Agregar zona Parken", labelOverMap: "Dibuja en el mapa el perímetro de la nueva zona Parken ↴", titleButton:"\uFF0B Agregar espacios Parken", isAddingEspaciosParken: false});
 }
+
 
 onMarkerClicked = (props, marker, e) => {
 
@@ -248,8 +335,6 @@ onMarkerClicked = (props, marker, e) => {
 onMapClicked = (location, map) => {
 
   if(!this.state.isShowingInfo){
-
-  
       console.log(location, map);
       map.panTo(location);
       console.log((this.state.markers));
@@ -310,7 +395,10 @@ handleSubmit = event => {
     this.setState({
       isAddingZona: true,
       isAddingEspaciosParken: true,
-      polygonTwo: this.state.polygonWorld});
+      polygonTwo: this.state.polygonWorld,
+      titleButton: "Agregar zona Parken",
+      labelOverMap: "Dibuja dentro el perímetro todos los espacios de la nueva zona Parken:"
+    });
     //Show the polygone
     //change the title button => "Agregar zona Parken"
     //
@@ -326,8 +414,11 @@ handleSubmit = event => {
      "coordenadasPoly": this.state.polygon,
      "coodenadasMarker": this.state.markers
     }
+    var self = this;
+    this.setState({showLoading: true});
     axios.post('http://'+this.state.url+'/administrador/agregarZonaParken', payload)
     .then(res => {
+      self.setState({showLoading: false});
       const response = res.data;
       console.log(response);
       if(response.success === 2){
@@ -355,6 +446,7 @@ handleSubmit = event => {
       }
       
     }).catch(error => {
+      self.setState({showLoading: false});
      alert(error.message);
      this.setState({isLoading : false})
    });
@@ -363,12 +455,12 @@ handleSubmit = event => {
 
 renderMap(){
   const style = {
-    width: '70%',
-    height: '60%'
+    width: '100%',
+    height: '80vh'
   }
   
   return(
-    <div className="Mapi">
+    <div style={{ height: '80vh', width: '100%', position: 'relative' }}>
     <Map 
     key={123} 
     google={this.props.google} 
@@ -409,15 +501,13 @@ renderAddZones() {
   }
   return (
     <div className="Zonas" key={128} >
-    
-    <PageHeader>
-    {this.state.title}
-    </PageHeader>
+    <PageHeader ><button className='but' onClick={this.setNoAddingZona}>{"←"}</button>{this.state.title}</PageHeader>    
+      <form className="Formulario" onSubmit={this.handleSubmit}>
+      <Form inline>
+        <FormGroup controlId="nombre" bsSize="small" >
 
-      <form onSubmit={this.handleSubmit}>
-      
-        <FormGroup controlId="nombre" bsSize="small">
-          <ControlLabel>Nombre de la zona</ControlLabel>
+          <ControlLabel>Nombre de la zona</ControlLabel>{' '}      
+
           <FormControl
           autoFocus
           disabled={this.state.isShowingInfo}
@@ -425,27 +515,36 @@ renderAddZones() {
            onChange={this.handleChange}
            type="text"
           />
+
         </FormGroup>
         {this.state.isShowingInfo ? 
         <FormGroup controlId="estatus" bsSize="small">
-          <ControlLabel>Estatus</ControlLabel>
+          <ControlLabel>Estatus</ControlLabel>{' '}
           <FormControl
            value={this.state.estatus}
            disabled={this.state.isShowingInfo}
            type="text"
-          /></FormGroup> : 
+          />
+
+          </FormGroup>: 
           <FormGroup controlId="estatus">
-      <ControlLabel>Estatus</ControlLabel>
+
+      <ControlLabel>Estatus</ControlLabel>{' '}
+
+
       <FormControl componentClass="select" placeholder={this.state.estatus}>
         <option onClick={this.setEstatus.bind(this, "NO DISPONIBLE")}>NO DISPONIBLE</option>
         <option onClick={this.setEstatus.bind(this, "DISPONIBLE")}>DISPONIBLE</option>
       </FormControl>
+
     </FormGroup>}
-        
+    
     <FormGroup controlId="precio">
-    <ControlLabel>Precio</ControlLabel>
+
+    <ControlLabel>Precio por espacio Parken (5 minutos)</ControlLabel>{' '}   
     <InputGroup>
     <InputGroup.Addon>$</InputGroup.Addon>
+    
           <FormControl
            value={this.state.precio}
            disabled={this.state.isShowingInfo}
@@ -455,32 +554,50 @@ renderAddZones() {
           <InputGroup.Addon>.00</InputGroup.Addon>
 
           </InputGroup>
-        </FormGroup>
-        {this.state.isAddingZona && this.state.isShowingInfo ?
-        <div></div>: <button className='delete btn btn-danger' 
-        onClick={this.clearMapOfMarkers}>
-        Limpiar mapa
-    </button>  }
 
-{!this.state.isShowingInfo ? <LoaderButton className='btn btn-primary'
-block
-bsSize="large"
-disabled={!this.validateInfoZone()}
-type="submit"
-isLoading={this.state.isLoading}
-text={this.state.titleButton}
-loadingText="Procesando..."
-/>:<div></div>}
-        
+        </FormGroup>
+        </Form>  
+        {this.state.isAddingZona && this.state.isShowingInfo ?
+        <div className="f"></div>: 
+        <div className="f">
+        <FormGroup controlId="espacios">
+        <ControlLabel>{this.state.labelOverMap}</ControlLabel>{' '}      
+        </FormGroup>
+        </div>}
+      {
+        this.renderMap()
+      }
+      {this.state.isAddingZona && this.state.isShowingInfo ?
+        <div></div>: 
+        <div className='btn'>
+        <button className='delete btn btn-danger btn-sm' 
+                disabled={!this.validateInputMap()}
+                onClick={this.clearMapOfMarkers}>
+                
+        Restablecer mapa
+        </button>
+        </div>  }
+      {!this.state.isShowingInfo ? 
+      <div className='btn'>
+      <LoaderButton className='btn btn-primary'
+          block
+          bsSize="large"
+          disabled={!this.validateInfoZone()}
+          type="submit"
+          isLoading={this.state.isLoading}
+          text={this.state.titleButton}
+          loadingText="Procesando..."/></div>:
+          <div></div>}
+
+
       </form>
-      {this.renderMap()}
   </div>
   )
 }
 
 renderZonasList(zone) {
 return (
-
+<div className="list">{
 [{}].concat(zone).map(
   (zone, i) =>
     i !== 0
@@ -493,21 +610,19 @@ return (
               <b>{"\uFF0B"}</b> Agregar zona Parken
             </h4>
           </ListGroupItem>
-)
+)}
+</div>
 )
 }
 
 
 renderLander() {
 return (
-  <div className="Zonas" key={124}>
-    <h1>Zonas Parken</h1>
-    <ListGroupItem onClick={this.setAddingAdmins}>
-            <h4>
-              <b>{"\uFF0B"}</b> Agregar zona Parken
-            </h4>
-          </ListGroupItem>
-  </div>
+  <div className="load">
+  <h4>
+    Cargando zonas Parken...
+  </h4>
+</div>
 );
 }
 
@@ -515,7 +630,6 @@ return (
 renderZonas() {
 return (
   <div className="Zonas" key={125}>
-    <PageHeader>Zonas Parken</PageHeader>
     <ListGroup>
       {!this.state.isLoading && this.renderZonasList(this.state.zonas)}
     </ListGroup>
@@ -534,6 +648,36 @@ render() {
     this.renderLander()
   ):
   this.props.history.push("/login")}
+      <Modal show={this.state.show} onHide={this.handleClose}>
+    <Modal.Header closeButton>
+      <Modal.Title>{this.state.titleAlert}</Modal.Title>
+    </Modal.Header>
+    <Modal.Body>
+    {this.state.bodyAlert}
+    </Modal.Body>
+    <Modal.Footer>
+      {this.state.button1 ? 
+            <Button bsStyle={this.state.styleAlert1} onClick={this.handleAction1}>{this.state.titleButtonAlert1}</Button>:
+            <div></div>
+          }
+      {this.state.button2 ? 
+      <Button bsStyle={this.state.styleAlert2} onClick={this.handleAction2}>{this.state.titleButtonAlert2}</Button>:
+            <div></div>
+          }
+
+    </Modal.Footer>
+  </Modal>
+  <Modal show={this.state.showLoading} backdrop="static" keyboard={false}>
+    <Modal.Body>
+      <Modal.Title>
+      <LoaderButton className='btn btn-link'
+            block
+            bsSize="large"
+            isLoading={true}
+            loadingText="Cargando..."/>
+        </Modal.Title>
+    </Modal.Body>
+  </Modal>
     </div>
   );
 }

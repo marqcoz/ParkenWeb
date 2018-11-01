@@ -14,6 +14,7 @@ export default class Administrador extends Component {
     isAddingAdmins: false,
     isConnected: false,
     thereAdmins: true,
+    showLoading: false,
     isEditing: false,
     isDeleted: false,
     title:"",
@@ -39,6 +40,9 @@ export default class Administrador extends Component {
 }
 
 componentDidMount() {
+  if(this.props.isAuthenticated){
+    this.verificarAdmin();
+  }
   if(this.props.isEditProfile){
     this.setState({isEditing: true});
     this.setState({title: "Editar administrador"});
@@ -57,9 +61,37 @@ componentDidMount() {
   }
 }
 
+async verificarAdmin(){
+  var self = this;
+  var url = 'http://'+this.state.url+'/administrador/verificarAdministrador?administrador='+localStorage.getItem("idadministrador").toString();
+  this.setState({showLoading: true});
+  await axios.get(url)
+    .then(res => {
+      self.setState({showLoading: false});
+      if(res.data.success === 1){
+        this.setState({isLoading : false})
+        this.setState({isConnected : true})
+      }else{
+        this.setState({isLoading : false})
+        this.setState({isConnected : false})
+        this.props.handleLogout();
+    
+      }
+  }).catch(error => {
+    self.setState({showLoading: false});
+      alert(error.message);
+      this.setState({isLoading : false})
+      this.setState({isConnected : false})
+  });
+}
+
+
 async gettingAdministradores(){
+  var self = this;
+  this.setState({showLoading: true});
   await axios.get('http://'+this.state.url+'/administrador/obtenerAdministradores')
  .then(res => {
+  self.setState({showLoading: false});
    const persons = res.data;
    console.log(persons);
    if(persons.success === 2){
@@ -73,6 +105,7 @@ async gettingAdministradores(){
    }
    
  }).catch(error => {
+  self.setState({showLoading: false});
   alert(error.message);
   this.setState({isLoading : false})
   this.setState({isConnected : false})
@@ -120,8 +153,10 @@ deleteAdmin(id){
     var payload = { data: {
       "idadministrador": id
     }}
+    this.setState({showLoading: true});
     axios.delete('http://'+this.state.url+'/administrador/eliminarAdministrador', payload)
     .then(res => {
+      self.setState({showLoading: false});
       const persons = res.data;
       console.log(persons);
       if(persons.success === 1){
@@ -147,6 +182,7 @@ deleteAdmin(id){
       this.setState({isLoading : false})
       this.setState({isConnected : true})
     }).catch(error => {
+      self.setState({showLoading: false});
      alert(error.message);
      this.setState({isLoading : false})
      this.setState({isConnected : false})
@@ -229,9 +265,10 @@ handleSubmit = async event => {
 
       if(this.state.isEditing){
         //Se editará el administrador
+        this.setState({showLoading: true});
         await axios.post('http://'+this.state.url+'/administrador/editarAdministrador', payload)
         .then(function (response) {
-          
+          self.setState({showLoading: false});
             if(response.data.success === 1){
                 //alert("Se modificó el perfil del administrador exitosamente.");
                 self.showAlert("Administrador modificado",
@@ -260,16 +297,17 @@ handleSubmit = async event => {
         }
         })
         .catch(function (error) {
+          self.setState({showLoading: false});
             alert(error.message);
         });
         this.setState({ isLoading: false });
         this.setState({isConnected: true});
 
       }else{
-
+        this.setState({showLoading: true});
         await axios.post('http://'+this.state.url+'/administrador/agregarAdministrador', payload)
       .then(function (response) {
-        
+        self.setState({showLoading: false});
           if(response.data.success === 1){
               //alert("Administrador agregado exitosamente.");
               self.showAlert("Nuevo administrador",
@@ -290,6 +328,7 @@ handleSubmit = async event => {
       }
       })
       .catch(function (error) {
+        self.setState({showLoading: false});
           alert(error.message);
       });
       this.setState({ isLoading: false });
@@ -304,9 +343,8 @@ handleSubmit = async event => {
 
 renderAddAdministrador() {
   return (
-    <div className="Administrador" >
-    <PageHeader className="tit">{this.state.title}</PageHeader>
-    
+    <div className="Administrador" >  
+    <PageHeader ><button className='but' onClick={this.setNoAddingAdmins}>{"←"}</button>{this.state.title}</PageHeader>    
       <form className="Formulario" onSubmit={this.handleSubmit}>
         <FormGroup controlId="nombre" bsSize="short">
           <ControlLabel>Nombre</ControlLabel>
@@ -412,7 +450,6 @@ renderLander() {
 renderNotes() {
   return (
     <div className="Administrador">
-      <PageHeader className="tit">Administradores</PageHeader>
       <ListGroup>
         {!this.state.isLoading && this.renderNotesList(this.state.persons)}
       </ListGroup>
@@ -446,6 +483,17 @@ render() {
           }
 
     </Modal.Footer>
+  </Modal>
+  <Modal show={this.state.showLoading} backdrop="static" keyboard={false}>
+    <Modal.Body>
+      <Modal.Title>
+      <LoaderButton className='btn btn-link'
+            block
+            bsSize="large"
+            isLoading={true}
+            loadingText="Cargando..."/>
+        </Modal.Title>
+    </Modal.Body>
   </Modal>
   </div>
   );
