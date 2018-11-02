@@ -216,8 +216,6 @@ handleAction2(){
   this.setState({show: false});
 }
 setAddingAdmins = event => {
-
-
   this.setState({nombre: ""}); 
   this.setState({apellido: ""}); 
   this.setState({email: "" }); 
@@ -226,6 +224,7 @@ setAddingAdmins = event => {
   this.setState({idadministrador: ""}); 
   this.setState({title: "Agregar administrador"});
   this.setState({isAddingAdmins: true});
+  this.setState({isEditing: false});
 }
 
 setNoAddingAdmins = event => {

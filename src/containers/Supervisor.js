@@ -29,12 +29,14 @@ export default class Supervisor extends Component {
     password: "",
     repassword: "",
     celular: "",
+    subcelular:"",
     direccion: "",
     estatus: "INACTIVO",
     zona: "",
     zonasparken: [],
     show: false,
-    showLoading: false 
+    showLoading: false, 
+    isFromZone: false
   };
 
   this.deleteSuper = this.deleteSuper.bind(this);
@@ -49,14 +51,22 @@ export default class Supervisor extends Component {
   this.handleCloseLoading = this.handleCloseLoading.bind(this);
   this.handleAction1 = this.handleClose.bind(this);
   this.handleAction2 = this.handleAction2.bind(this);
-
+  this.isValidPhoneNumberMarcos = this.isValidPhoneNumberMarcos.bind(this);
+  
 }
 
 componentDidMount() {
   if(this.props.isAuthenticated){
     this.verificarAdmin();
   }
- this.gettingSupervisoresXZona();
+  if(this.props.isAddSuper){
+    this.setAddingSupers();
+    this.setState({zonasparken: [{id: this.props.idzonaparken, nombre: this.props.nombrezonaparken}],
+    isFromZone: true})
+    this.props.addSuperOff();
+  }else{
+    this.gettingSupervisoresXZona(0);
+  }
 }
 
 handleClose(){
@@ -74,8 +84,8 @@ handleAction2(){
   this.setState({show: false});
 }
 
-async gettingSupervisoresXZona(){
-  var idzona = "0";
+async gettingSupervisoresXZona(zona){
+  var idzona = zona.toString();
   var self = this;
   var url = 'http://'+this.state.url+'/administrador/obtenerSupervisoresXZona?idzona=' + idzona;
   this.setState({showLoading: true});
@@ -104,6 +114,9 @@ this.setState({isConnected : false})
 });
 }
 
+isValidPhoneNumberMarcos(number){
+  return number.length === 10;
+}
 
 validateForm() {
 
@@ -116,6 +129,10 @@ validateForm() {
   this.state.celular != null; 
 }
 
+validateZonaInput(){
+  return this.state.isShowingInfo || this.state.isFromZone;
+}
+
 validatePassword(){
   if(this.state.password === this.state.repassword){
     return true;
@@ -125,19 +142,20 @@ validatePassword(){
 }
 
 setEdit(supervisor){
-  this.setState({isEditing: true});
   this.setState({title: "Editar supervisor"});
   this.setState({nombre: supervisor.nombre}); 
   this.setState({apellido: supervisor.apellido}); 
   this.setState({email: supervisor.email }); 
-  this.setState({celular: supervisor.celular.substring(3)});
+  this.setState({celular: supervisor.celular});
+  this.setState({subcelular: supervisor.celular});
   this.setState({password: supervisor.contrasena}); 
   this.setState({repassword: supervisor.contrasena});
   this.setState({direccion: supervisor.direccion}); 
   this.setState({idsupervisor: supervisor.id}); 
   this.setState({zonasparken: [{id: supervisor.zonaparken, nombre: supervisor.nombrezonaparken}]})
  this.setState({isAddingSupers: true});
- 
+ this.setState({isEditing: true});
+  this.setState({isShowingInfo: false}); 
 }
 
 
@@ -160,7 +178,7 @@ deleteSuper(id){
          "Se eliminó al administrador correctamente.",
          true, "info", "OK",
          false, "", "");
-      self.gettingSupervisoresXZona();
+      self.gettingSupervisoresXZona(0);
       self.setState({isAddingSupers:false, isConnected: true});
     }else if(supervisor.success === 2){
         if(supervisor.error === '0'){
@@ -218,21 +236,27 @@ setAddingSupers = event => {
     direccion: "",
     estatus: "",
 });     
-    this.gettingZonasParken();
-  this.setState({title: "Agregar supervisor", isAddingSupers: true});
+    //this.gettingZonasParken();
+  this.setState({title: "Agregar supervisor",
+   isAddingSupers: true, 
+   isShowingInfo: false,
+  isEditing: false});
 }
 
 setNoAddingAdmins = event => {
   this.setState({isAddingSupers: false});
+  if(this.state.isFromZone){
+    //this.gettingZonasParken();
+    this.setState({isFromZone: false});
+    this.props.history.push("/zonasparken");
+    
+  }
 }
 
 async gettingZonasParken(){
-  var self = this;
-  this.setState({showLoading: true});
 var url = 'http://'+this.state.url+'/administrador/obtenerZonasParkenID';
  await axios.get(url)
  .then(res => {
-  self.setState({showLoading: false});
    const zonasparken = res.data;
    console.log(zonasparken);
    if(zonasparken.success === 2){
@@ -246,7 +270,6 @@ var url = 'http://'+this.state.url+'/administrador/obtenerZonasParkenID';
    }
    
  }).catch(error => {
-  self.setState({showLoading: false});
   alert(error.message);
   this.setState({isLoading : false})
   this.setState({isConnected : false})
@@ -296,7 +319,9 @@ handleSubmit = async event => {
     false, "", "");
       return;
   }
+console.log(this.state.celular);
   if(!isValidPhoneNumber(this.state.celular)){
+    console.log(this.state.celular);
     this.setState({ isLoading: false });
     //alert("Número celular no válido");
     this.showAlert("Atención",
@@ -306,6 +331,39 @@ handleSubmit = async event => {
     
       return;
   }
+
+  /*
+  if(this.state.subcelular != null && this.state.subcelular.substring(3) === this.state.celular){
+    if(!this.isValidPhoneNumberMarcos(this.state.celular)){
+      console.log(this.state.celular);
+      this.setState({ isLoading: false });
+      //alert("Número celular no válido");
+      this.showAlert("Atención",
+      "Número celular no válido",
+      true, "info", "OK",
+      false, "", "");
+      
+        return;
+    }
+
+  }else{
+    if(!this.isValidPhoneNumberMarcos(this.state.celular)){
+      console.log(this.state.celular);
+      this.setState({ isLoading: false });
+      //alert("Número celular no válido");
+      this.showAlert("Atención",
+      "Número celular no válido",
+      true, "info", "OK",
+      false, "", "");
+      
+        return;
+    }else{
+
+    }
+
+  }
+  */
+  
 
   try {
 
@@ -340,7 +398,7 @@ handleSubmit = async event => {
                 false, "", "");
                 self.setState({isEditing: false});
                 self.setState({isAddingSupers:false});
-                self.gettingSupervisoresXZona();
+                self.gettingSupervisoresXZona(0);
                 self.setState({isAddingSupers:false, isConnected: true});
             }
             else if(response.data.success === 2){
@@ -351,6 +409,21 @@ handleSubmit = async event => {
                 false, "", "");
             }
             else{
+
+              if(response.data.success === 0){
+                //alert(response.data.error);
+                self.showAlert("Error 100",
+                response.data.error,
+                true, "info", "OK",
+                false, "", "");
+            }else{
+                //alert("Error al agregar supervisor.");
+                self.showAlert("Error 512",
+                "Error al modificar el perifl del supervisor.",
+                true, "info", "OK",
+                false, "", "");
+            }
+            /*
               if(response.data.success === 0 || response.data.error === 2)
                 //alert("Error al modificar el perfil del supervisor.");
                 self.showAlert("Error",
@@ -363,6 +436,7 @@ handleSubmit = async event => {
                 "Error al modificar el perfil del supervisor.",
                 true, "info", "OK",
                 false, "", "");
+                */
         }
         })
         .catch(function (error) {
@@ -385,7 +459,7 @@ handleSubmit = async event => {
                 true, "info", "OK",
                 false, "", "");
               self.setNoAddingAdmins();
-              self.gettingSupervisoresXZona();
+              self.gettingSupervisoresXZona(0);
               self.setState({isAddingSupers: false, isConnected: true});
           }
           else {
@@ -458,6 +532,7 @@ infoSuper(supervisor){
     this.setState({zonasparken: [{id: supervisor.zonaparken, nombre: supervisor.nombrezonaparken}]})
     this.setState({isAddingSupers: true});
     this.setState({isShowingInfo: true});
+    this.setState({isEditing: false});
   }
 
   async verificarAdmin(){
@@ -553,7 +628,7 @@ renderAddSupervisor() {
             <ControlLabel>Zona Parken</ControlLabel>
             <FormControl 
                 componentClass="select" 
-                disabled={this.state.isShowingInfo}
+                disabled={this.validateZonaInput()}
                 onClick={this.gettingZonasParken}
                 inputRef={ref => { this.myInput = ref; }}>
             {this.state.zonasparken.map((marker) =>

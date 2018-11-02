@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {Button, Image} from "react-bootstrap";
+import {Button} from "react-bootstrap";
 import "./Home.css";
 import axios from "axios";
 
@@ -15,32 +15,30 @@ export default class Home extends Component {
     apellido: this.props.apellido,
     email: this.props.email,
     password: this.props.password,
-    isInBD: false
+
   };
 
   this.irAEditar = this.irAEditar.bind(this);
   //this.verificarAdmin = this.verificarAdmin.bind(this);
 }
 
-componentDidMount(){
+async componentDidMount(){
   if(this.props.isAuthenticated){
-    this.verificarAdmin();
+    await this.verificarAdmin();
   }
     
   }
 
-  verificarAdmin(){
+  async verificarAdmin(){
     var url = 'http://'+this.state.url+'/administrador/verificarAdministrador?administrador='+localStorage.getItem("idadministrador").toString();
-    axios.get(url)
+    await axios.get(url)
       .then(res => {
         if(res.data.success === 1){
           this.setState({isLoading : false})
           this.setState({isConnected : true})
-          this.setState({isInBD: true});
         }else{
           this.setState({isLoading : false})
           this.setState({isConnected : false})
-          this.setState({isInBD: false});
           this.props.handleLogout();
       
         }
@@ -48,7 +46,6 @@ componentDidMount(){
         alert(error.message);
         this.setState({isLoading : false})
         this.setState({isConnected : false})
-        this.setState({isInBD: true});
     });
   }
 
@@ -68,7 +65,9 @@ componentDidMount(){
       <div className="subtituloHome">
       {localStorage.getItem("nombreadministrador") + " "}
       {localStorage.getItem("apellidoadministrador") + "\n"}{"\n"}
+      <div className="subsubtituloHome">
       {localStorage.getItem("emailadministrador")}
+      </div>
       </div>
       
         <div className="subtituloHome">

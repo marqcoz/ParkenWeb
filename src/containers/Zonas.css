@@ -34,6 +34,14 @@
     padding-right: 20%;
   }
 
+  .Zonas .sublist{
+    align-content: left;
+    text-align: left;
+ 
+    margin-top: 30px;  
+    margin-left: 5%;
+    margin-right: 5%;  
+  }
   .Zonas .load{
     padding-top: 20%;
     text-align: center;
@@ -73,10 +81,7 @@
   }
 
   .Mapi{
-    justify-content:center;
-background: black;
-    height: 30%;
-
+    margin-top: 30px;
   }
 
 

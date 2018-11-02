@@ -14,6 +14,7 @@ class App extends Component {
       isAuthenticated: false,
       isAuthenticating: true,
       isEditProfile: false,
+      isAddSuper: false,
       //host:"3.16.52.71",
       host:"localhost",
       port:"3001",
@@ -22,7 +23,10 @@ class App extends Component {
       nombre: "",
       apellido: "",
       email: "",
-      password: ""
+      password: "",
+
+      idzonaparken: 0,
+      nombrezonaparken:""
     };
 
     this.userHasAuthenticated = this.userHasAuthenticated.bind(this);
@@ -32,23 +36,25 @@ class App extends Component {
     this.handleShow = this.handleShow.bind(this);
     this.editProfile = this.editProfile.bind(this);
     this.editProfileOff = this.editProfileOff.bind(this);
+    this.setInfoSupervisor = this.setInfoSupervisor.bind(this);
+    this.addSuper = this.addSuper.bind(this);
+    this.addSuperOff = this.addSuperOff.bind(this);
   }
 
   componentDidMount(){
     var newAuth = ('true' === localStorage.getItem("isLogged") );
-    console.log(newAuth);
+    //console.log(newAuth);
     //var newAuth = localStorage.getItem("isLogged");
     this.setState({isAuthenticated: newAuth});
     this.setState({isAuthenticating:false})
-    console.log(this.state.isAuthenticated);
+    //console.log(this.state.isAuthenticated);
   }
 
   
   userHasAuthenticated = authenticated => {
-    console.log("userHas");
-    console.log(authenticated);
+    //console.log(authenticated);
     var newAuth = ('true' === authenticated );
-    console.log(newAuth);
+    //console.log(newAuth);
     this.setState({ isAuthenticated: newAuth});
     localStorage.setItem("isLogged", authenticated);
   }
@@ -60,6 +66,15 @@ class App extends Component {
   editProfile() {
     this.setState({isEditProfile: true});
     this.props.history.push("/administradores");
+  }
+
+  addSuperOff(){
+    this.setState({isAddSuper: false});
+  }
+
+  addSuper() {
+    this.setState({isAddSuper: true});
+    this.props.history.push("/supervisores");
   }
 
   setInfoAdministrador = (id, nombre, apellido, email, password) => {
@@ -75,6 +90,13 @@ class App extends Component {
     localStorage.setItem("apellidoadministrador", apellido);
     localStorage.setItem("emailadministrador", email);
     localStorage.setItem("passwordadministrador", password);
+  }
+
+  setInfoSupervisor(zona, nombre){
+    this.setState({ idzonaparken: zona, nombrezonaparken: nombre,
+      isEditProfile: false
+    });
+    console.log("Jajaja");
   }
 
   handleLogout() {
@@ -109,7 +131,15 @@ class App extends Component {
       setInfoAdministrador: this.setInfoAdministrador,
       editProfileOff: this.editProfileOff,
       editProfile : this.editProfile,
-      isEditProfile : this.state.isEditProfile
+      isEditProfile : this.state.isEditProfile,
+      idsupervisor: this.state.idsupervisor,
+      idzonaparken:this.state.idzonaparken,
+      nombrezonaparken: this.state.nombrezonaparken,
+      isAddSuper: this.state.isAddSuper,
+      setInfoSupervisor: this.setInfoSupervisor,
+      addSuper: this.addSuper,
+      addSuperOff : this.addSuperOff,
+
     };
 
     return (

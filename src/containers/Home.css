@@ -1,6 +1,6 @@
 .Home{
   bottom: 0px;
-  height: 100vh;
+  height: auto;
 }
 .Home .lander {
     height: 100%; 
@@ -9,20 +9,28 @@
   }
   
   .Home .tituloHome{
-    font-size: 40px;
+    font-size: 50px;
     font-weight: bold;
     text-align: center;
     align-content: center;
     align-items: center;
-    padding: 20px;
+    padding-bottom: 40px;
+
   }
   
   .Home .subtituloHome{
-    font-size: 20px;
+    font-size: 30px;
+    font-weight: bold;
     text-align: center;
     margin-bottom: 30px;
   }
 
+  .Home .subsubtituloHome{
+    font-size: 20px;
+    font-weight: normal;
+    text-align: center;
+    margin-bottom: 30px;
+  }
   .Home .lander h1 {
     font-family: "Open Sans", sans-serif;
     font-weight: 600;
