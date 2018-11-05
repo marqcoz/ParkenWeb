@@ -173,9 +173,8 @@ deleteSuper(id){
     const supervisor = res.data;
     console.log(supervisor);
     if(supervisor.success === 1){
-      //alert("Se eliminó el administrador.");
       self.showAlert("Supervisor eliminado",
-         "Se eliminó al administrador correctamente.",
+         "Se eliminó al supervisor correctamente.",
          true, "info", "OK",
          false, "", "");
       self.gettingSupervisoresXZona(0);
