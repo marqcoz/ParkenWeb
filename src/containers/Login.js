@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {Button, FormGroup, Alert, FormControl, ControlLabel } from "react-bootstrap";
+import {FormGroup, Alert, FormControl, ControlLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import axios from 'axios';
 import "./Login.css";
@@ -138,9 +138,9 @@ const source = CancelToken.source();
             text="Iniciar sesión"
             loadingText="Iniciando…"
           />
-          <div className="subtituloLogin">
+          {/* <div className="subtituloLogin">
           <Button bsStyle="link">Recuperar contraseña</Button>
-          </div>
+          </div> */}
         </form> :
         this.props.history.push("/")
         }
