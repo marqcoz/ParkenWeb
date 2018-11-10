@@ -154,15 +154,13 @@ async gettingSupervisoresXZona(zona){
         this.setState({isLoading : false})
         this.setState({isConnected : true})
       }
-      
-      
-}).catch(error => {
-  self.setState({showLoading: false});
-alert(error.message);
-this.setState({isLoading : false})
-this.setState({isConnected : false})
-
-});
+      })
+    .catch(error => {
+      self.setState({showLoading: false});
+      alert(error.message);
+      this.setState({isLoading : false})
+      this.setState({isConnected : false})
+    });
 }
 
 
@@ -207,8 +205,6 @@ async obtenerZonasParken(){
   .then(res => {
     self.setState({showLoading: false});
    const zonas = res.data.ZonasParken;
-   console.log("Zonas json");
-   console.log(zonas);
    if(zonas.success === 2){
     this.setState({isLoading : false})
     this.setState({isConnected : false})
@@ -225,9 +221,6 @@ async obtenerZonasParken(){
   this.setState({isLoading : false})
   this.setState({isConnected : false})
   });
-  console.log("Poligonos virgenes");
-  console.log(this.state.polygon);
-  console.log(this.state.polygonOne);
 }
 
 showAlert(title, body, btn1, style1, tBtn1, btn2, style2, tBtn2, data){
@@ -360,13 +353,13 @@ async deleteZonaParken(id){
       this.setState({isAddingZona:false, isAddingEspaciosParken: false});
     }else if(zona.success === 2){
         if(zona.error === '0'){
-            //alert("No se puede eliminar al supervisor, debe existir al menos un supervisor en la zona Parken.");    
             self.showAlert("Error al eliminar zona Parken",
             "Error",
             true, "info", "OK",
             false, "", "");
             this.setState({isAddingZona:false, isAddingEspaciosParken: false});
-        }else{
+        }
+        else{
             if(zona.error === '5'){
                 //alert("No se puede eliminar al supervisor, tiene reportes pendientes.");
                 self.showAlert("Supervisores registrados",
@@ -766,9 +759,7 @@ onMarkerClicked = (props, marker, e) => {
 onMapClicked = (location, map) => {
   
   if(!this.state.isShowingInfo){
-      //console.log(location, map);
       map.panTo(location);
-      //console.log((this.state.markers));
       var lati = location.lat();
       var longi = location.lng();
       var newEle = {
@@ -809,22 +800,16 @@ onMapClicked = (location, map) => {
     }
   }else{
     if(this.state.isEditing){
-      //alert("Se van a agregar a  markersNew");
       this.setState({ 
         location: location,
         markers: this.state.markers.concat([newEle]),
           markersNew: this.state.markersNew.concat([newEle])});
-          //console.log("Agregando markersNew");
-          //console.log(this.state.markersNew);
     }else{
-      //Si esta agregando zonas, entonces el resultado del puntito lo agregamos a otro json
       this.setState({ 
         location: location,
         markers: this.state.markers.concat([newEle]),
       });
-
     }
-  
   }
 }
 }
