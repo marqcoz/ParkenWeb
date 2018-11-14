@@ -36,12 +36,12 @@ this.state = {
   markers: [],
     //Hay que obtener este json
     markersHidden: [],
-    
+
   polygon : [/*
     {lat: 19.41867612502457, lng: -99.17699637499084},
     {lat: 19.427418290377116, lng: -99.1803223141693},
     {lat: 19.43478400897405, lng: -99.16407885637511}
-    
+
    {lat: 19.433964868997485, lng: -99.1526347261505},
    {lat: 19.431253338424256, lng: -99.1581815343933},
    {lat: 19.425182583471425, lng: -99.1560035806732},
@@ -57,7 +57,7 @@ this.state = {
   polygonWorld:[
   {lat:85,lng:180},{lat:85,lng:90},{lat:85,lng:0},{lat:85,lng:-90},{lat:85,lng:-180},{lat:0,lng:-180},{lat:-85,lng:-180},
   {lat:-85,lng:-90},{lat:-85,lng:0},{lat:-85,lng:90},{lat:-85,lng:180},{lat:0,lng:180},{lat:85,lng:180}],
-  
+
 /*
  polygon:[
     {lat: 28.745, lng: -70.579},
@@ -111,6 +111,7 @@ this.irASupervisor = this.irASupervisor.bind(this);
 this.editarZonaParken = this.editarZonaParken.bind(this);
 this.setMap = this.setMap.bind(this);
 this.addDeletedList = this.addDeletedList.bind(this);
+this.agregarZonaParken = this.agregarZonaParken.bind(this);
 
 }
 
@@ -128,10 +129,10 @@ async gettingLocation(){
     },
     () => {
       this.setState({showLoading: false});
-      this.setState({ 
+      this.setState({
         loading: false, isAddingZona: true });
     }
-    
+
   );
 }
 
@@ -158,8 +159,79 @@ async gettingSupervisoresXZona(zona){
     .catch(error => {
       self.setState({showLoading: false});
       alert(error.message);
-      this.setState({isLoading : false})
-      this.setState({isConnected : false})
+      self.setState({isLoading : false})
+      self.setState({isConnected : false})
+    });
+}
+
+async agregarZonaParken(){
+  //Enviamos la peticion para agregar una zona Parken
+    //console.log(this.state.polygon);
+    var self = this;
+    var payload = {
+      "nombre": this.state.nombre,
+      "estatus" :this.state.estatus,
+      "precio" : this.state.precio,
+      "coordenadasPoly": this.state.polygon,
+      "coodenadasMarker": this.state.markers
+     };
+     console.log(payload);
+ 
+     this.setState({showLoading: true});
+  await axios.post('http://'+this.state.url+'/administrador/agregarZonaParken', payload)
+      .then(function (res) {
+       self.setState({showLoading: false});
+       const response = res.data;
+       console.log(response);
+       if(response.success === 1){
+        //alert("Zona agregada exitosamente!");
+        self.showAlert("Nueva zona Parken",
+       "Zona agregada exitosamente. Agrega supervisores y asígnalos a ésta zona para que pueda estar disponible a los automovilistas.",
+       true, "info", "OK",
+       false, "", "");
+        
+        //self.setState({isEditing: false,
+          //isAddingZona:false,
+          //isAddingEspaciosParken: false});
+          //self.obtenerZonasParken();
+       self.setNoAddingZona();
+        //self.setState({isAddingZona:false, isAddingEspaciosParken: false});
+      }else{
+       if(response.success === 2){
+        self.setState({isLoading : false})
+ 
+       }else{
+           if(response.success === 6){
+             //alert("El nombre de la zona Parken ya existe.");
+             self.showAlert("Error",
+             "El nombre de la zona Parken ya existe.",
+             true, "info", "OK",
+             false, "", "");
+           }else{
+           if(response.success === 7){
+             //alert("El perimetro de la zona se intersecta con otra zona Parken.");
+             self.showAlert("Error",
+             "El perimetro de la zona se intersecta con otra zona Parken.",
+             true, "info", "OK",
+             false, "", "");
+             self.setState({polygon:[], markers: [], colorStrike:"#F44336",
+             colorFill: "#F44336"});
+             self.addNewZone();
+           }else{
+             alert(response.error);
+           }
+ 
+         }
+       }
+       }
+       //self.setState({isLoading : false})
+       //self.setState({isConnected : true})
+ 
+     }).catch(function (error) {
+       self.setState({showLoading: false});
+      alert(error.message);
+      self.setState({isLoading : false})
+   self.setState({isConnected : false})
     });
 }
 
@@ -188,13 +260,13 @@ async verificarAdmin(){
         this.setState({isLoading : false})
         this.setState({isConnected : false})
         this.props.handleLogout();
-    
+
       }
   }).catch(error => {
     self.setState({showLoading: false});
       alert(error.message);
-      this.setState({isLoading : false})
-      this.setState({isConnected : false})
+      self.setState({isLoading : false})
+      self.setState({isConnected : false})
   });
 }
 
@@ -203,23 +275,26 @@ async obtenerZonasParken(){
   this.setState({showLoading: true});
   await axios.get('http://'+this.state.url+'/administrador/obtenerZonasParken')
   .then(res => {
+    console.log("ObtenerZonas")
     self.setState({showLoading: false});
-   const zonas = res.data.ZonasParken;
+   const zonas = res.data;
+   console.log(res.data);
+   console.log(zonas);
    if(zonas.success === 2){
     this.setState({isLoading : false})
     this.setState({isConnected : false})
-  
+
    }else{
-    this.setState({ zonas });
+    this.setState({ zonas: zonas.ZonasParken });
     this.setState({isLoading : false})
     this.setState({isConnected : true})
    }
-   
+
   }).catch(error => {
     self.setState({showLoading: false});
   alert(error.message);
-  this.setState({isLoading : false})
-  this.setState({isConnected : false})
+  self.setState({isLoading : false})
+  self.setState({isConnected : false})
   });
 }
 
@@ -280,7 +355,7 @@ async editarZonaParken(){
     //console.log(response);
     self.setState({showLoading: false});
       if(response.data.success === 1){
-        
+
           self.showAlert("Zona Parken actualizada",
             "Se modificó la información de la zona correctamente.",
             true, "info", "OK",
@@ -290,7 +365,7 @@ async editarZonaParken(){
             isAddingEspaciosParken: false});
             self.setNoAddingZona();
             //self.obtenerZonasParken();
-    
+
       }else{
         self.showAlert("Error al modificar zona Parken",
             response.data.error,
@@ -300,7 +375,7 @@ async editarZonaParken(){
         self.setNoAddingZona();
             //self.obtenerZonasParken();
       }
-      
+
   })
   .catch(function (error) {
     self.setState({showLoading: false});
@@ -343,7 +418,7 @@ async deleteZonaParken(id){
   .then(res => {
     self.setState({showLoading: false});
     const zona = res.data;
-    //console.log(zona);
+    console.log(zona);
     if(zona.success === 1){
       self.showAlert("Zona Parken eliminada",
          "Se eliminó la zona Parken correctamente.",
@@ -366,7 +441,7 @@ async deleteZonaParken(id){
                 "Antes de eliminar una zona asegúrate de asignar o eliminar a todos los supervisores de la zona Parken. ",
                 true, "info", "OK",
                 false, "", "");
-      
+
             }else{
               if(zona.error === '6'){
                 //alert("No se puede eliminar al supervisor, tiene reportes pendientes.");
@@ -374,7 +449,7 @@ async deleteZonaParken(id){
                 "Antes de eliminar una zona asegúrate de resolver todos los reportes en la zona Parken. ",
                 true, "info", "OK",
                 false, "", "");
-      
+
             }else{
               if(zona.error === '4'){
                 //alert("No se puede eliminar al supervisor, tiene reportes pendientes.");
@@ -382,7 +457,7 @@ async deleteZonaParken(id){
                 "Antes de eliminar una zona asegúrate de resolver todas las sanciones de la zona Parken. ",
                 true, "info", "OK",
                 false, "", "");
-      
+
               }else{
                 if(zona.error === '7'){
                   //alert("No se puede eliminar al supervisor, tiene reportes pendientes.");
@@ -390,14 +465,23 @@ async deleteZonaParken(id){
                   "Antes de eliminar una zona asegúrate que el estatus de todos los espacios Parken sea DISPONIBLE.",
                   true, "info", "OK",
                   false, "", "");
-        
+
                 }else{
+                  if(zona.error === '3'){
+                    //alert("No se puede eliminar al supervisor, tiene reportes pendientes.");
+                    self.showAlert("Espacios Parken",
+                    "La zona Parken no puede quedarse sin espacios",
+                    true, "info", "OK",
+                    false, "", "");
+
+                  }else{
                 //alert("Error al eliminar administrador.");
                 self.showAlert("Error al eliminar la zona Parken",
                 "Ocurrió un error con el servidor.",
                 true, "info", "OK",
                 false, "", "");
             }
+          }
         }
       }
     }
@@ -415,20 +499,14 @@ async deleteZonaParken(id){
   }).catch(error => {
     self.setState({showLoading: false});
    alert(error.message);
-   this.setState({isLoading : false})
-   this.setState({isConnected : false})
+   self.setState({isLoading : false})
+   self.setState({isConnected : false})
  });
 
 }
 
-setNoAddingZona(){
-  this.setState({
-    isShowingInfo: false,
-    isAddingZona: false,
-    isShowingMap: true,
-    readyForEdit: false,
-    isAddingEspaciosParken: false,
-    idzonaparken: "",
+async setNoAddingZona(){
+  await this.setState({
   nombre : "",
   estatus: "NO DISPONIBLE",
   precio: "",
@@ -440,8 +518,8 @@ setNoAddingZona(){
     lat: 40.854885,
     lng: -88.081807
   } ],
-  markers: [], 
-  polygon : [], 
+  markers: [],
+  polygon : [],
   polygonWorld:[
   {lat:85,lng:180},{lat:85,lng:90},{lat:85,lng:0},{lat:85,lng:-90},{lat:85,lng:-180},{lat:0,lng:-180},{lat:-85,lng:-180},
   {lat:-85,lng:-90},{lat:-85,lng:0},{lat:-85,lng:90},{lat:-85,lng:180},{lat:0,lng:180},{lat:85,lng:180}],
@@ -452,7 +530,42 @@ setNoAddingZona(){
   isPolygonClickable: false,
   thereAdmins: true,
   isEditing: false,
-  supers:[]
+  supers:[],
+  zonas: []
+  });
+  await this.setState({    
+  isShowingInfo: false,
+  isAddingZona: false,
+  isAddingEspaciosParken: false,
+  isShowingMap: true,
+  loading: true,
+  showLoading: false,
+  userLocation: { lat: 19.432551, lng: -99.133022 },
+
+  location:[{ lat: 19.432551, lng: -99.133022 },{
+    lat: 40.854885,
+    lng: -88.081807
+  } ],
+  markers: [],
+    markersHidden: [],
+  polygon : [],
+  polygonWorld:[
+  {lat:85,lng:180},{lat:85,lng:90},{lat:85,lng:0},{lat:85,lng:-90},{lat:85,lng:-180},{lat:0,lng:-180},{lat:-85,lng:-180},
+  {lat:-85,lng:-90},{lat:-85,lng:0},{lat:-85,lng:90},{lat:-85,lng:180},{lat:0,lng:180},{lat:85,lng:180}],
+
+  colorStrike:"#F44336",
+  colorFill: "#F44336",
+  labelOverMap: "Modifica la zona Parken",
+  isPolygonClickable: false,
+  isLoading: true,
+  isConnected: true,
+  thereAdmins: true,
+  isEditing: false,
+  readyForEdit: false,
+  zonas: [],
+  supers: [],
+
+  contador: 0,
   });
   this.obtenerZonasParken();
 }
@@ -467,7 +580,7 @@ setMap(event){
 
 setEdit(zona){
   //console.log(zona.espaciosParken);
-  this.setState({ 
+  this.setState({
     idzonaparken: zona.id,
     nombre: zona.nombre,
     estatus: zona.estatus,
@@ -481,13 +594,13 @@ setEdit(zona){
     polygonBefore: zona.coordenadas
    });
    this.setState({
-    title: "Zona Parken " + zona.nombre, 
-    titleButton:"\uFF0B Agregar espacios Parken", 
-    isShowingInfo: false, 
+    title: "Zona Parken " + zona.nombre,
+    titleButton:"\uFF0B Agregar espacios Parken",
+    isShowingInfo: false,
     isShowingMap: false,
     isAddingZona: true,
     isEditing: true,
-    polygonOne: zona.coordenadas, 
+    polygonOne: zona.coordenadas,
     polygonTwo: [],
     markersDeleted:[],
     markersNew:[],
@@ -496,14 +609,14 @@ setEdit(zona){
     labelOverMap: "Modifica el perímetro de la zona Parken",
    });
    //this.setState({polygonOne: zona.coordenadas, polygon: []});
- 
+
    this.gettingSupervisoresXZona(zona.id);
 
 }
 
 infoZona(zona){
   //console.log(zona);
-  this.setState({ 
+  this.setState({
     idzonaparken: zona.id,
     nombre: zona.nombre,
     estatus: zona.estatus,
@@ -512,12 +625,12 @@ infoZona(zona){
     markers: zona.espaciosParken
    });
    this.setState({
-    title: "Zona Parken " + zona.nombre, 
-    titleButton:"Nothing", 
-    isShowingInfo: true, 
+    title: "Zona Parken " + zona.nombre,
+    titleButton:"Nothing",
+    isShowingInfo: true,
     isAddingZona: true,
     isEditing: false,
-    polygonOne: zona.coordenadas, 
+    polygonOne: zona.coordenadas,
     polygonTwo: [],
     userLocation: {lat: zona.centro[0].lat , lng: zona.centro[0].lng },
     loading:false
@@ -528,9 +641,9 @@ infoZona(zona){
 
 addNewZone(){
  // alert("Se agregara una nueva zona Parken");
-  this.setState({ title: "Agregar zona Parken", 
-  labelOverMap: "Dibuja en el mapa el perímetro de la nueva zona Parken ↴", 
-  titleButton:"\uFF0B Agregar espacios Parken", 
+  this.setState({ title: "Agregar zona Parken",
+  labelOverMap: "Dibuja en el mapa el perímetro de la nueva zona Parken ↴",
+  titleButton:"\uFF0B Agregar espacios Parken",
   isEditing: false,
   isAddingEspaciosParken: false,
 polygonOne: this.state.polygon, polygonTwo:[] });
@@ -545,9 +658,9 @@ setEstatus = est =>{
 
 
 validateForm() {
-  return this.state.nombre.length > 0 && 
-  this.state.precio.length > 0 
-  && this.state.estatus.length > 0; 
+  return this.state.nombre.length > 0 &&
+  this.state.precio.length > 0
+  && this.state.estatus.length > 0;
 
 }
 
@@ -561,8 +674,8 @@ validateInputMap() {
   //Validaremos si ya ingresaron poligonos
   //alert(this.state.contador);
   if(this.state.isShowingMap){
-    //Si el mapa se esta mostrando entonces validamos que 
-    return this.state.polygon.length > 2 && 
+    //Si el mapa se esta mostrando entonces validamos que
+    return this.state.polygon.length > 2 &&
     this.state.contador === 0 &&
     //Por el momento que merkersHidden sea mayor que 2
     this.state.markers.length > 0;
@@ -577,14 +690,14 @@ validateInputMapReset() {
   //alert(this.state.contador);
   if(this.state.isShowingMap){
     if(this.state.isEditing){
-      //Si el mapa se esta mostrando entonces validamos que 
-      return this.state.polygon.length > 2 && 
+      //Si el mapa se esta mostrando entonces validamos que
+      return this.state.polygon.length > 2 &&
       //Por el momento que merkersHidden sea mayor que 2
       this.state.markers.length > 0;
     }else{
       return this.state.markers.length > 0;
     }
-    
+
 
   }else{
     return this.state.markers.length > 0;
@@ -592,7 +705,7 @@ validateInputMapReset() {
 }
 
 handleChange(event) {
-  
+
   this.setState({
     [event.target.id]: event.target.value
   });
@@ -600,14 +713,14 @@ handleChange(event) {
 
 validateInfoZone(){
   if(this.state.isAddingZona && !this.state.isEditing){
-    return this.state.nombre.length > 0 && 
+    return this.state.nombre.length > 0 &&
     this.state.estatus.length > 0 &&
     this.state.precio.length > 0 &&
     this.state.markers.length > 0 &&
     this.state.polygon.length > 2;
   }else{
     if(this.state.isEditing){
-      return this.state.nombre.length > 0 && 
+      return this.state.nombre.length > 0 &&
       this.state.estatus.length > 0 &&
       this.state.precio.length > 0 &&
       this.state.markersHidden.length > 0 &&
@@ -647,7 +760,7 @@ handleChangeNumber(event) {
       [event.target.id]: (event.target.value)
     });
   }
-  
+
 }
 
 
@@ -655,7 +768,7 @@ clearMapOfMarkers = event => {
 
   if(this.state.isAddingZona && !this.state.isEditing){
     this.setState({markers:[], polygon:[],
-      polygonOne: [], polygonTwo: [], 
+      polygonOne: [], polygonTwo: [],
       colorStrike:"#F44336",
       colorFill: "#F44336"
     });
@@ -663,13 +776,13 @@ clearMapOfMarkers = event => {
   }else{
     if(this.state.isEditing){
       this.setState({markers:[], polygon:[],
-        polygonOne: [], polygonTwo: [], 
+        polygonOne: [], polygonTwo: [],
         colorStrike:"#F44336",
         colorFill: "#F44336"
       });
-      this.setState({ 
+      this.setState({
         labelOverMap: "Modifica el perímetro de la zona Parken",
-      titleButton:"\uFF0B Agregar espacios Parken", 
+      titleButton:"\uFF0B Agregar espacios Parken",
       readyForEdit: false,
       isAddingEspaciosParken: false});
     }
@@ -683,8 +796,8 @@ onMarkerClicked = (props, marker, e) => {
   var lati = props.position.lat;
   var longi = props.position.lng;
       var newEle = {
-        coordinates: 
-        { lat:lati, 
+        coordinates:
+        { lat:lati,
           lng:longi
         }
       };
@@ -697,7 +810,7 @@ onMarkerClicked = (props, marker, e) => {
           this.setState({markers: this.state.markers.concat([]),
           contador2: this.state.contador2+1
         });
-          
+
         }
         //
 
@@ -722,7 +835,7 @@ onMarkerClicked = (props, marker, e) => {
           this.addDeletedList(this.state.markersHidden[k].idespacio);
           break;
         }
-        
+
         //Si es el ultimo entonces no paso nada y podemos preguntar en markersnew
         if(k === this.state.markersHidden.length - 1){
           //console.log("No paso nada MarkersHidden" + k);
@@ -730,15 +843,15 @@ onMarkerClicked = (props, marker, e) => {
             if(this.state.markersNew[j].coordinates.lat === newEle.coordinates.lat && this.state.markersNew[j].coordinates.lng===newEle.coordinates.lng){
               //console.log("MarkersNew" + j);
               this.state.markersNew.splice(j, 1);
-              
+
               break;
             }
           }
           this.setState({markersNew: this.state.markersNew});
         }
       }
-      
-      
+
+
       }else{
 
         for(i = 0; i < this.state.markers.length; i++){
@@ -750,38 +863,39 @@ onMarkerClicked = (props, marker, e) => {
         }
       }
       this.setState({markers: this.state.markers});
+      console.log(this.state.markers);
       }
-      
+
     }
-      
+
 }
 
 onMapClicked = (location, map) => {
-  
+
   if(!this.state.isShowingInfo){
       map.panTo(location);
       var lati = location.lat();
       var longi = location.lng();
       var newEle = {
-        coordinates: 
-        { lat:lati, 
+        coordinates:
+        { lat:lati,
           lng:longi
         }
       };
-      var newElePoly = 
-        { lat:lati, 
+      var newElePoly =
+        { lat:lati,
           lng:longi
         }
       ;
 
   if(this.state.isAddingZona && !this.state.isAddingEspaciosParken){
     if(this.state.isEditing){
-    
+
       if(this.state.contador === 0){
         this.setState({polygon: []});
       }
 
-      this.setState({ 
+      this.setState({
         location: location,
         markers: this.state.markers.concat([newEle]),
         polygon: this.state.polygon.concat([newElePoly])
@@ -790,26 +904,30 @@ onMapClicked = (location, map) => {
       this.setState({polygonOne: this.state.polygon,
       contador: this.state.contador+1});
     }else{
-      this.setState({ 
+      this.setState({
         location: location,
         markers: this.state.markers.concat([newEle]),
         polygon: this.state.polygon.concat([newElePoly]),
       });
 
       this.setState({polygonOne: this.state.polygon});
+      console.log(this.state.polygon);
     }
+    console.log(this.state.markers);
   }else{
     if(this.state.isEditing){
-      this.setState({ 
+      this.setState({
         location: location,
         markers: this.state.markers.concat([newEle]),
           markersNew: this.state.markersNew.concat([newEle])});
     }else{
-      this.setState({ 
+      this.setState({
         location: location,
         markers: this.state.markers.concat([newEle]),
       });
     }
+    console.log(this.state.polygon);
+    console.log(this.state.markers);
   }
 }
 }
@@ -835,7 +953,7 @@ handleSubmit = event => {
     }else{
       this.setState({polygon: this.state.polygon});
     }
- 
+
     this.setState({markers:[],
     polygonOne:this.state.polygon.reverse(),
     colorFill: "#000000",
@@ -852,7 +970,7 @@ handleSubmit = event => {
     //Show the polygone
     //change the title button => "Agregar zona Parken"
     //
-    //to change the map 
+    //to change the map
 
     if(this.state.isEditing){
       this.setState({markers: this.state.markersHidden,
@@ -860,67 +978,10 @@ handleSubmit = event => {
         contador:0,
         readyForEdit: true,
         labelOverMap: "Dibuja dentro el perímetro todos los espacios parken. Para agregar haz click en la ubicación exacta o haz click en un espacio para eliminarlo."});
-        
+
     }
   }else{
-    //Enviamos la peticion para agregar una zona Parken 
-    
-    //console.log(this.state.polygon);
-    var payload = {
-     "nombre": this.state.nombre,
-     "estatus" :this.state.estatus,
-     "precio" : this.state.precio,
-     "coordenadasPoly": this.state.polygon,
-     "coodenadasMarker": this.state.markers
-    }
-    this.setState({showLoading: true});
-    axios.post('http://'+this.state.url+'/administrador/agregarZonaParken', payload)
-    .then(res => {
-      self.setState({showLoading: false});
-      const response = res.data;
-      //console.log(response);
-      if(response.success === 2){
-       this.setState({isLoading : false})
-   
-      }else{
-        if(response.success === 1){
-          //alert("Zona agregada exitosamente!");
-          self.showAlert("Nueva zona Parken",
-         "Zona agregada exitosamente. Agrega supervisores y asígnalos a ésta zona para que pueda estar disponible a los automovilistas.",
-         true, "info", "OK",
-         false, "", "");
-          this.setState({isAddingZona:false, isAddingEspaciosParken: false});
-          this.obtenerZonasParken();
-        }else{
-          if(response.success === 6){
-            //alert("El nombre de la zona Parken ya existe.");
-            self.showAlert("Error",
-            "El nombre de la zona Parken ya existe.",
-            true, "info", "OK",
-            false, "", "");
-          }
-          if(response.success === 7){
-            //alert("El perimetro de la zona se intersecta con otra zona Parken.");
-            self.showAlert("Error",
-            "El perimetro de la zona se intersecta con otra zona Parken.",
-            true, "info", "OK",
-            false, "", "");
-            this.setState({polygon:[], markers: [], colorStrike:"#F44336",
-            colorFill: "#F44336"});
-            self.addNewZone();
-          }else{
-            alert(response.error);
-          }
-          
-        }
-       this.setState({isLoading : false})
-      }
-      
-    }).catch(error => {
-      self.setState({showLoading: false});
-     alert(error.message);
-     this.setState({isLoading : false})
-   });
+    this.agregarZonaParken();
   }
 }
 
@@ -929,12 +990,12 @@ renderMap(){
     width: '100%',
     height: '80vh'
   }
-  
+
   return(
     <div style={{ height: '80vh', width: '100%', position: 'relative' }}>
-    <Map 
-    key={123} 
-    google={this.props.google} 
+    <Map
+    key={123}
+    google={this.props.google}
     style={style}
     initialCenter={this.state.userLocation}
     disableDefaultUI={true}
@@ -950,10 +1011,10 @@ renderMap(){
       fillColor={this.state.colorFill}
       fillOpacity={0.3} >
     </Polygon>
-  
-  
+
+
   {this.state.markers.map((marker, i) => (
-  <Marker 
+  <Marker
   position={marker.coordinates}
   onClick={this.onMarkerClicked}
   key={500+i}
@@ -969,11 +1030,11 @@ renderAddZones() {
 
   return (
     <div className="Zonas" key={128} >
-    <PageHeader ><button className='but' onClick={this.setNoAddingZona}>{"←"}</button>{this.state.title}</PageHeader>    
+    <PageHeader ><button className='but' onClick={this.setNoAddingZona}>{"←"}</button>{this.state.title}</PageHeader>
       <form className="Formulario" onSubmit={this.handleSubmit}>
       <Form inline>
         <FormGroup controlId="nombre" bsSize="small" >
-          <ControlLabel>Nombre de la zona</ControlLabel>{' '}      
+          <ControlLabel>Nombre de la zona</ControlLabel>{' '}
 
           <FormControl
           autoFocus
@@ -984,34 +1045,34 @@ renderAddZones() {
           />
 
         </FormGroup>
-        {this.state.isShowingInfo ? 
+        {this.state.isShowingInfo ?
         <FormGroup controlId="estatus" bsSize="small">
-          <ControlLabel>Estatus</ControlLabel> {' '} 
+          <ControlLabel>Estatus</ControlLabel> {' '}
           <FormControl
            value={this.state.estatus}
            disabled={this.validateEstatus()}
-           type="text"> 
+           type="text">
           </FormControl>
           </FormGroup>
-         :       
+         :
          <FormGroup controlId="estatus" bsSize="small">
-            <ControlLabel>Estatus</ControlLabel> {' '} 
+            <ControlLabel>Estatus</ControlLabel> {' '}
             <div className="form-group">
               <select className="form-control"  ref="selectStatus" disabled={!(this.state.supers.length > 0)}>
                 <option selected disabled hidden >{this.state.estatus}</option>
                 <option onClick={this.setEstatus.bind(this, "DISPONIBLE")}>DISPONIBLE</option>
-                <option onClick={this.setEstatus.bind(this, "NO DISPONIBLE")}>NO DISPONIBLE</option> 
+                <option onClick={this.setEstatus.bind(this, "NO DISPONIBLE")}>NO DISPONIBLE</option>
               </select>
             </div>
           </FormGroup>
     }
-    
-    
+
+
     <FormGroup controlId="precio">
-    <ControlLabel>Precio por espacio Parken (5 minutos)</ControlLabel>{' '}   
+    <ControlLabel>Precio por espacio Parken (5 minutos)</ControlLabel>{' '}
     <InputGroup>
     <InputGroup.Addon>$</InputGroup.Addon>
-    
+
           <FormControl
            value={this.state.precio}
            disabled={this.state.isShowingInfo}
@@ -1023,49 +1084,49 @@ renderAddZones() {
           </InputGroup>
 
         </FormGroup>
-        </Form>  
+        </Form>
         {this.state.isAddingZona ?
-               <div className="sublist">  
+               <div className="sublist">
                {this.state.isEditing || this.state.isShowingInfo ?
                 <ControlLabel>Supervisores</ControlLabel>:
-                <div></div>} 
+                <div></div>}
                  {this.state.supers.length > 0 ?
                    [{}].concat(this.state.supers).map(
                    (supervisor, i) =>
                      i !== 0
-                       ? 
-                       <ListGroupItem 
+                       ?
+                       <ListGroupItem
                        header={supervisor.nombre.trim() + ' ' + supervisor.apellido}>
                            <div>{supervisor.email}</div>
                            <div>{supervisor.nombrezonaparken}</div>
                            </ListGroupItem>
                        :<div></div>
-                     ):(this.state.isShowingInfo || this.state.isEditing) ? 
+                     ):(this.state.isShowingInfo || this.state.isEditing) ?
                         <div>Sin supervisores asignados</div>: <div></div>
-                 } 
+                 }
                  {!this.state.isShowingInfo && this.state.isAddingZona && this.state.isEditing?
-                    <button className='delete btn btn-success btn-default' 
+                    <button className='delete btn btn-success btn-default'
                     onClick={this.irASupervisor}>
                     Agregar supervisor
                     </button>:<div></div>
                  }
-                </div> 
+                </div>
                 :<div className="sublist"></div>
         }
                 <div className="sublist">
                 {this.state.isEditing && !this.state.isShowingMap?
-                <button className='delete btn btn-warning btn-default' 
+                <button className='delete btn btn-warning btn-default'
                   onClick={this.setMap}
                 >
                 Editar mapa
                 </button>:<div></div>}
                 </div>
-        {this.state.isShowingMap ?        
+        {this.state.isShowingMap ?
         this.state.isAddingZona && this.state.isShowingInfo ?
-        <div className="f"></div>: 
+        <div className="f"></div>:
         <div className="f">
         <FormGroup controlId="espacios">
-        <ControlLabel>{this.state.labelOverMap}</ControlLabel>{' '}      
+        <ControlLabel>{this.state.labelOverMap}</ControlLabel>{' '}
         </FormGroup>
         </div> :<div></div>}
       {
@@ -1074,22 +1135,22 @@ renderAddZones() {
         this.renderMap():
         <div></div>
         }
-        
+
         </div>
       }
 
-      {this.state.isShowingMap ? 
+      {this.state.isShowingMap ?
       this.state.isAddingZona && this.state.isShowingInfo ?
-        <div></div>: 
+        <div></div>:
         <div>
         <div className='btn'>
-        <button className='delete btn btn-danger btn-sm' 
+        <button className='delete btn btn-danger btn-sm'
                 disabled={!this.validateInputMapReset()}
-                onClick={this.clearMapOfMarkers}>        
+                onClick={this.clearMapOfMarkers}>
         Restablecer mapa
         </button>
       </div>
-      {!this.state.isShowingInfo && !this.state.readyForEdit? 
+      {!this.state.isShowingInfo && !this.state.readyForEdit?
       <div className='btn'>
       <LoaderButton className='btn btn-primary'
           block
@@ -1102,17 +1163,17 @@ renderAddZones() {
       </div>:<div></div>}
       </div>:<div></div>}
 
-          {this.state.isEditing ?        
+          {this.state.isEditing ?
             <div>
               <div className='btn'>
-                <button className='delete btn btn-success btn-lg' 
+                <button className='delete btn btn-success btn-lg'
                         disabled={!this.validateInputMap()}
                         type="button"
                         onClick={this.showAlert.bind(this,"Editar zona Parken",
                                       "¿Estás seguro de modificar la información de la zona Parken?",
                                       true, "info", "Cancelar",
-                                      true, "danger", "Editar")}>        
-                  Editar zona Parken
+                                      true, "danger", "Editar")}>
+                  Guardar cambios
                 </button>
               </div>
             </div> : <div></div>}
@@ -1130,16 +1191,16 @@ return (
       ?
       <ListGroupItem header={'Zona ' + zone.nombre} key={131+i}>
       {/*<div className='btn-group ml-auto'>*/}
-             <button className='delete btn btn-info' 
+             <button className='delete btn btn-info'
               onClick={this.infoZona.bind(this, zone)}>
               Ver
               </button>
-              <button className='delete btn btn-success' 
+              <button className='delete btn btn-success'
                 onClick={this.setEdit.bind(this, zone)}
               >
               Editar
               </button>
-              <button className='delete btn btn-danger' 
+              <button className='delete btn btn-danger'
               onClick={this.showAlert.bind(this,"Eliminar zona Parken",
               "¿Estás seguro de eliminar la zona Parken?",
               true, "info", "Cancelar",
@@ -1183,9 +1244,9 @@ return (
 render() {
   return (
     <div className="Zonas" key={126}>
-    {this.props.isAuthenticated ? 
-    (this.state.isConnected ? 
-      (this.state.isShowingInfo ? 
+    {this.props.isAuthenticated ?
+    (this.state.isConnected ?
+      (this.state.isShowingInfo ?
         this.renderAddZones(): (this.state.isAddingZona ?
            <div>{this.renderAddZones()}</div>: this.renderZonas())):
     this.renderLander()
@@ -1199,11 +1260,11 @@ render() {
     {this.state.bodyAlert}
     </Modal.Body>
     <Modal.Footer>
-      {this.state.button1 ? 
+      {this.state.button1 ?
             <Button bsStyle={this.state.styleAlert1} onClick={this.handleAction1}>{this.state.titleButtonAlert1}</Button>:
             <div></div>
           }
-      {this.state.button2 ? 
+      {this.state.button2 ?
       <Button bsStyle={this.state.styleAlert2} onClick={this.handleAction2}>{this.state.titleButtonAlert2}</Button>:
             <div></div>
           }

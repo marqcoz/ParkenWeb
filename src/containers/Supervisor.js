@@ -245,7 +245,7 @@ setAddingSupers = event => {
 setNoAddingAdmins = event => {
   this.setState({isAddingSupers: false});
   if(this.state.isFromZone){
-    //this.gettingZonasParken();
+    this.gettingZonasParken();
     this.setState({isFromZone: false});
     this.props.history.push("/zonasparken");
     

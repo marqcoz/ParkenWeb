@@ -24,7 +24,7 @@ export default class Login extends Component {
 
 
   componentWillMount(){
-    
+
   }
 
 
@@ -47,7 +47,7 @@ export default class Login extends Component {
 const source = CancelToken.source();
 
     try {
-  
+
         var payload={
         "correo":this.state.email,
         "contrasena":this.state.password,
@@ -55,8 +55,8 @@ const source = CancelToken.source();
         }
 
         var self = this;
-        
-        
+
+
 
         await axios.post('http://'+this.state.url+'/login', payload, { cancelToken: source.token })
         .then(function (response) {
@@ -64,11 +64,12 @@ const source = CancelToken.source();
         //console.log(response.data.success);
         source.cancel('Operation canceled by the user.');
         if(response.data.success === 1){
-        //console.log("Login successfull");
+        console.log("Inicio de sesión exitoso");
+        console.log(response.data);
         self.setState({isAlert:true, styleAlert:"success", titleAlert: "Bienvenido", textAlert:""});
         self.props.setInfoAdministrador(response.data.id, response.data.Nombre, response.data.Apellido, response.data.Email, response.data.Contrasena);
         self.props.userHasAuthenticated('true');
-        
+
         //self.props.history.push("/");
         }
         else if(response.data.success === 2){
@@ -81,7 +82,7 @@ const source = CancelToken.source();
         //alert("Username does not exist");
         self.setState({isAlert:true, styleAlert:"danger", titleAlert: "Error: ", textAlert: "No hay conexión con el servidor."});
         }
-        
+
         })
         .catch(function (error) {
           if (axios.isCancel(error)) {
@@ -91,13 +92,13 @@ const source = CancelToken.source();
         alert(error.message);
         });
         this.setState({ isLoading: false });
-        
-        
+
+
     } catch (e) {
       alert(e.message);
       this.setState({ isLoading: false });
     }
-   
+
   }
 
   render() {
@@ -126,7 +127,7 @@ const source = CancelToken.source();
           </FormGroup>
           {this.state.isAlert ?
           <Alert bsStyle={this.state.styleAlert}>
-            <strong>{this.state.titleAlert}</strong>         
+            <strong>{this.state.titleAlert}</strong>
             {this.state.textAlert}
           </Alert> : <div></div> }
           <LoaderButton

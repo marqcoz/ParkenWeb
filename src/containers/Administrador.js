@@ -317,13 +317,25 @@ handleSubmit = async event => {
 
           }
           else if(response.data.success === 2){
-            alert("Error al agregar administrador.");
+            //alert("Error al agregar administrador.");
+            self.showAlert("Error",
+            "Error al agregar administrador.",
+            true, "info", "OK",
+            false, "", "");
           }
           else{
             if(response.data.success === 0 && response.data.error === 2)
-              alert("El correo electrónico ya está registrado.");
+              //alert("El correo electrónico ya está registrado.");
+              self.showAlert("Error",
+            "El correo electrónico ya está registrado.",
+            true, "info", "OK",
+            false, "", "");
             else
-              alert("Error al agregar administrador.");
+              //alert("Error al agregar administrador.");
+              self.showAlert("Error",
+              "Error al agregar administrador.",
+              true, "info", "OK",
+              false, "", "");
       }
       })
       .catch(function (error) {

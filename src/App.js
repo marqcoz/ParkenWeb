@@ -9,7 +9,7 @@ class App extends Component {
 
   constructor(props) {
     super(props);
-  
+
     this.state = {
       isAuthenticated: false,
       isAuthenticating: true,
@@ -50,7 +50,7 @@ class App extends Component {
     //console.log(this.state.isAuthenticated);
   }
 
-  
+
   userHasAuthenticated = authenticated => {
     //console.log(authenticated);
     var newAuth = ('true' === authenticated );
@@ -155,7 +155,7 @@ class App extends Component {
             </Navbar.Brand>
             <Navbar.Toggle />
           </Navbar.Header>
-          
+
           <Navbar.Collapse>
             <Nav pullRight>
             {this.state.isAuthenticated
