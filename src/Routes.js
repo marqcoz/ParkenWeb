@@ -9,6 +9,7 @@ import AdministradorNuevo from "./containers/NuevoAdmin";
 import Zonas from "./containers/Zonas";
 import ZonaInfo from "./containers/ZonaInfo";
 import Supervisor from "./containers/Supervisor";
+import Terms from "./containers/Terms";
 
 
 export default ({ childProps }) =>
@@ -20,6 +21,7 @@ export default ({ childProps }) =>
     <AppliedRoute path="/zonasparken" exact component={Zonas} props={childProps} />
     <AppliedRoute path="/zonaparkeninfo" exact component={ZonaInfo} props={childProps} />
     <AppliedRoute path="/supervisores" exact component={Supervisor} props={childProps} />
+    <AppliedRoute path="/terms&conditions" exact component={Terms} props={childProps} />
 
   
     { /* Finally, catch all unmatched routes */ }

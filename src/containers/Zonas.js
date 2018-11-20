@@ -139,7 +139,9 @@ async gettingLocation(){
 async gettingSupervisoresXZona(zona){
   var idzona = zona.toString();
   var self = this;
-  var url = 'http://'+this.state.url+'/administrador/obtenerSupervisoresXZona?idzona=' + idzona;
+  var url = 'http://'+
+            this.state.url+'/administrador/obtenerSupervisoresXZona?idzona=' + 
+            idzona;
   this.setState({showLoading: true});
   await axios.get(url)
     .then(res => {
@@ -320,7 +322,8 @@ showAlert(title, body, btn1, style1, tBtn1, btn2, style2, tBtn2, data){
 addDeletedList(id){
   //Añadimos al array el id del espacio parken a eliminar
   this.setState({markersDeleted: this.state.markersDeleted.concat(id)});
-  //console.log(this.state.markersDeleted);
+  console.log("JSON espacios a eliminar");
+  console.log(this.state.markersDeleted);
 }
 
 async editarZonaParken(){
@@ -349,13 +352,11 @@ async editarZonaParken(){
     "coordenadasDeleted": this.state.markersDeleted
    }
 
-  await axios.post('http://'+this.state.url+'/administrador/actualizarZonaParken', payload)
-  .then(function (response) {
-    //console.log("Response actualizarZonaParken");
-    //console.log(response);
+  await axios.post('http://'+this.state.url+'/administrador/actualizarZonaParken', 
+    payload).then(function (response) {
+      
     self.setState({showLoading: false});
       if(response.data.success === 1){
-
           self.showAlert("Zona Parken actualizada",
             "Se modificó la información de la zona correctamente.",
             true, "info", "OK",
@@ -363,19 +364,13 @@ async editarZonaParken(){
           self.setState({isEditing: false,
             isAddingZona:false,
             isAddingEspaciosParken: false});
-            self.setNoAddingZona();
-            //self.obtenerZonasParken();
-
+          self.setNoAddingZona();
       }else{
         self.showAlert("Error al modificar zona Parken",
             response.data.error,
             true, "info", "OK",
             false, "", "");
-        //self.setState({isAddingZona:false, isAddingEspaciosParken: false});
-        self.setNoAddingZona();
-            //self.obtenerZonasParken();
       }
-
   })
   .catch(function (error) {
     self.setState({showLoading: false});
@@ -878,15 +873,14 @@ onMapClicked = (location, map) => {
       var longi = location.lng();
       var newEle = {
         coordinates:
-        { lat:lati,
-          lng:longi
-        }
+          { lat:lati,
+            lng:longi
+          }
       };
-      var newElePoly =
-        { lat:lati,
+      var newElePoly ={ 
+          lat:lati,
           lng:longi
-        }
-      ;
+        };
 
   if(this.state.isAddingZona && !this.state.isAddingEspaciosParken){
     if(this.state.isEditing){
@@ -894,15 +888,14 @@ onMapClicked = (location, map) => {
       if(this.state.contador === 0){
         this.setState({polygon: []});
       }
-
       this.setState({
         location: location,
         markers: this.state.markers.concat([newEle]),
         polygon: this.state.polygon.concat([newElePoly])
       });
-
       this.setState({polygonOne: this.state.polygon,
       contador: this.state.contador+1});
+
     }else{
       this.setState({
         location: location,
@@ -914,6 +907,7 @@ onMapClicked = (location, map) => {
       console.log(this.state.polygon);
     }
     console.log(this.state.markers);
+
   }else{
     if(this.state.isEditing){
       this.setState({
@@ -993,35 +987,32 @@ renderMap(){
 
   return(
     <div style={{ height: '80vh', width: '100%', position: 'relative' }}>
-    <Map
-    key={123}
-    google={this.props.google}
-    style={style}
-    initialCenter={this.state.userLocation}
-    disableDefaultUI={true}
-    zoomControl = {true}
-    zoom={18}
-    onClick={(t, map, c) => this.onMapClicked(c.latLng, map)}>
-    <Polygon
-      paths={[this.state.polygonOne,this.state.polygonTwo]}
-      clickable={this.state.isPolygonClickable}
-      strokeColor={this.state.colorStrike}
-      strokeOpacity={0.8}
-      strokeWeight={2}
-      fillColor={this.state.colorFill}
-      fillOpacity={0.3} >
-    </Polygon>
-
-
-  {this.state.markers.map((marker, i) => (
-  <Marker
-  position={marker.coordinates}
-  onClick={this.onMarkerClicked}
-  key={500+i}
-  />
-  ))}
-  </Map>
-  </div>
+      <Map
+        key={123}
+        google={this.props.google}
+        style={style}
+        initialCenter={this.state.userLocation}
+        disableDefaultUI={true}
+        zoomControl = {true}
+        zoom={18}
+        onClick={(t, map, c) => this.onMapClicked(c.latLng, map)}>
+          <Polygon
+            paths={[this.state.polygonOne,this.state.polygonTwo]}
+            clickable={this.state.isPolygonClickable}
+            strokeColor={this.state.colorStrike}
+            strokeOpacity={0.8}
+            strokeWeight={2}
+            fillColor={this.state.colorFill}
+            fillOpacity={0.3} >
+          </Polygon>
+          {this.state.markers.map((marker, i) => (
+            <Marker
+              position={marker.coordinates}
+              onClick={this.onMarkerClicked}
+              key={500+i}/>))
+          }
+      </Map>
+    </div>
   )
 }
 
